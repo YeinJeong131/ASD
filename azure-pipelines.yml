@@ -4,16 +4,31 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  - main
+  - build-pipeline   # including the branch that I made (yein)
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  # 1. install JDK (e.g. Java 17)
+  - task: UseJavaVersion@1
+    inputs:
+      versionSpec: '17'
+      distribution: 'zulu'
+      cache: gradle
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  # 2. build Gradle (gradlew )
+  - script: ./gradlew build
+    displayName: 'Build with Gradle'
+
+  # 3. run test
+  - script: ./gradlew test
+    displayName: 'Run Unit Tests'
+
+  # 4. upload artifact (store build result )
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: 'build/libs'
+      artifactName: 'drop'
+      publishLocation: 'Container'
