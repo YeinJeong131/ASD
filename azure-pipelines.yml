@@ -1,34 +1,36 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-  - main
-  - build-pipeline   # including the branch that I made (yein)
+  branches:
+    include:
+      - main
+      - build-pipeline
+
+pr:
+  branches:
+    include:
+      - main
+      - build-pipeline
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 steps:
-  # 1. install JDK (e.g. Java 17)
-  - task: UseJavaVersion@1
-    inputs:
-      versionSpec: '17'
-      distribution: 'zulu'
-      cache: gradle
+  # JDK 21
+  - powershell: |
+      Write-Host "Use JDK 21"
+      Write-Host "##vso[task.setvariable variable=JAVA_HOME]$env:JAVA_HOME_21_X64"
+      $env:JAVA_HOME = $env:JAVA_HOME_21_X64
+      $env:Path = "$env:JAVA_HOME\bin;" + $env:Path
+      java -version
+    displayName: 'Select JDK 21 (preinstalled)'
 
-  # 2. build Gradle (gradlew )
-  - script: ./gradlew build
-    displayName: 'Build with Gradle'
+  # run Gradle build
+  - script: gradlew.bat clean build --no-daemon
+    displayName: 'Gradle clean build'
 
-  # 3. run test
-  - script: ./gradlew test
-    displayName: 'Run Unit Tests'
-
-  # 4. upload artifact (store build result )
+  # upload build artifact
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'build/libs'
       artifactName: 'drop'
       publishLocation: 'Container'
+    displayName: 'Publish build artifacts'
