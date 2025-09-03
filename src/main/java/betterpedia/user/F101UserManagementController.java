@@ -22,7 +22,7 @@ public class F101UserManagementController {
     @GetMapping("/account")
     public String accountSettings(Model model) {
         model.addAttribute("pageTitle", "Account Settings");
-        return "settings";
+        return "account-settings";
     }
 
     @GetMapping("/editor")
