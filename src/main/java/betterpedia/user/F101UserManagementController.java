@@ -19,15 +19,21 @@ public class F101UserManagementController {
         return "login";
     }
 
+    @GetMapping("/read")
+    public String readOnly(Model model) {
+        model.addAttribute("pageTitle", "Betterpedia • Read");
+        return "read";
+    }
+
     @GetMapping("/account")
     public String accountSettings(Model model) {
         model.addAttribute("pageTitle", "Account Settings");
         return "account-settings";
     }
 
-    @GetMapping("/editor")
-    public String editor(Model model) {
-        model.addAttribute("pageTitle", "Article Editor");
-        return "editor";
+    @GetMapping("/admin")
+    public String admin(Model model) {
+        model.addAttribute("pageTitle", "Admin • User Management");
+        return "admin";
     }
 }
