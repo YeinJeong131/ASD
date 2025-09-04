@@ -15,17 +15,17 @@ public class DiscussionController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/discussion/{articleId}")
-    public String showDiscussion(@PathVariable String articleId, Model model) {
-        model.addAttribute("comments", commentService.getComments(articleId));
+    @GetMapping("/discussion")
+    public String showDiscussion(@RequestParam(defaultValue = "1") Long articleId, Model model) {
         model.addAttribute("articleId", articleId);
-        model.addAttribute("comment", new Comment());
+        model.addAttribute("comments", commentService.getCommentsByArticleId(articleId));
+        model.addAttribute("comment", new Comment()); // for form binding
         return "discussion";
     }
 
     @PostMapping("/discussion")
     public String postComment(@ModelAttribute Comment comment) {
-        commentService.save(comment);
-        return "redirect:/discussion/" + comment.getArticleId();
+        commentService.saveComment(comment);
+        return "redirect:/discussion?articleId=" + comment.getArticleId();
     }
 }

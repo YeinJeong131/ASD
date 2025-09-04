@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contributor Badges</title>
+</head>
+<body>
+<h2>Contributor Badge Levels</h2>
+
+<table border="1">
+    <tr>
+        <th>Username</th>
+        <th>Comments</th>
+        <th>Edits</th>
+        <th>Badge</th>
+    </tr>
+    <tr th:each="badge : ${badges}">
+        <td th:text="${badge.username}">User</td>
+        <td th:text="${badge.commentCount}">0</td>
+        <td th:text="${badge.editCount}">0</td>
+        <td th:text="${badge.badgeLevel}">Bronze</td>
+    </tr>
+</table>
+</body>
+</html>

@@ -8,18 +8,17 @@ import java.util.List;
 
 @Service
 public class CommentService {
-
     private final CommentRepository commentRepository;
 
     public CommentService(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
-    public List<Comment> getComments(String articleId) {
+    public List<Comment> getCommentsByArticleId(Long articleId) {
         return commentRepository.findByArticleId(articleId);
     }
 
-    public void save(Comment comment) {
+    public void saveComment(Comment comment) {
         commentRepository.save(comment);
     }
 }

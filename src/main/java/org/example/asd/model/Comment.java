@@ -5,34 +5,23 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Comment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String articleId;
-
+    private Long articleId;
     private String username;
-
-    @Column(columnDefinition = "TEXT")
     private String content;
+    private LocalDateTime timestamp;
 
-    private LocalDateTime timestamp = LocalDateTime.now();
-
-    // Constructors
-    public Comment() {}
-
-    public Comment(String articleId, String username, String content) {
-        this.articleId = articleId;
-        this.username = username;
-        this.content = content;
+    public Comment() {
+        this.timestamp = LocalDateTime.now(); // default timestamp
     }
 
-    // Getters and setters
+    // Getters and setters...
     public Long getId() { return id; }
-
-    public String getArticleId() { return articleId; }
-    public void setArticleId(String articleId) { this.articleId = articleId; }
+    public Long getArticleId() { return articleId; }
+    public void setArticleId(Long articleId) { this.articleId = articleId; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
