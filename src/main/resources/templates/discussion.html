@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Discussion</title>
+</head>
+<body>
+<h2>Discussion for Article [[${articleId}]]</h2>
+
+<form th:action="@{/discussion}" th:object="${comment}" method="post">
+    <input type="hidden" th:field="*{articleId}" th:value="${articleId}"/>
+    <input type="text" th:field="*{username}" placeholder="Your name" required/><br>
+    <textarea th:field="*{content}" placeholder="Write your comment" rows="4" cols="50" required></textarea><br>
+    <button type="submit">Post Comment</button>
+</form>
+
+<hr>
+
+<h3>Previous Comments</h3>
+<ul>
+    <li th:each="c : ${comments}">
+        <strong th:text="${c.username}">Name</strong>:
+        <span th:text="${c.content}">Comment</span>
+        <br><small th:text="${#dates.format(c.timestamp, 'dd MMM yyyy HH:mm')}"></small>
+    </li>
+</ul>
+</body>
+</html>
