@@ -1,4 +1,5 @@
 package org.example.asd.controller;
+import org.example.asd.model.Article;
 import org.example.asd.services.downloadService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -14,8 +15,21 @@ public class downloadController {
         this.service = service;
     }
 
-    @GetMapping("/{id}/txt")
+    @GetMapping("{id}/pdf")
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
+        System.out.println("ID is: " + id);
+        byte[] pdf = service.make_pdf_file(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentLength(pdf.length);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("Article_Betterpedia.pdf").build());
+        return ResponseEntity.ok().headers(headers).body(pdf);
+    }
+
+
+    @GetMapping("{id}/txt")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
+        System.out.println("ID is: " + id);
         byte[] b = service.make_txt_file(id);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
@@ -23,4 +37,7 @@ public class downloadController {
         headers.setContentDisposition(ContentDisposition.attachment().filename("Article_Betterpedia.txt").build());
         return ResponseEntity.ok().headers(headers).body(b);
     }
+
+
+
 }
