@@ -1,9 +1,26 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0; url=/login">
+    <meta charset="UTF-8">
+    <title>BetterPedia</title>
+    Header testing
 </head>
 <body>
-Redirecting to <a href="/login">login page</a>...
+<h1>Articles</h1>
+
+<iframe src="/api/articles" style="width:100%;height:40vh;border:0"></iframe>
+
+<button id="button_download_as_txt">Download as a simple .txt file</button>
+<br/>
+<button id="button_download_as_pdf">Download as a pdf file</button>
+<br/>
+
+<input id="search_by_word" placeholder="search by word">
+<button id="button_search">Search</button>
+<button>Does this exist</button>
+<div id="results"></div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
