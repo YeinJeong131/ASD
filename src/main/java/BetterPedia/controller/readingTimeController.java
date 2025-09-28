@@ -1,4 +1,4 @@
-package org.example.asd.controller;
+package BetterPedia.controller;
 
 public class readingTimeController {
 }

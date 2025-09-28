@@ -1,4 +1,4 @@
-package org.example.asd.model;
+package BetterPedia.model;
 
 public enum Language {
     ENGLISH,

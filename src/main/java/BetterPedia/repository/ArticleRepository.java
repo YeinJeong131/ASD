@@ -1,13 +1,11 @@
-package org.example.asd.repository;
+package BetterPedia.repository;
 
-import org.example.asd.model.Article;
-import org.example.asd.model.Language;
+import BetterPedia.model.Article;
+import BetterPedia.model.Language;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class ArticleRepository {
     private final List<Article> data = Arrays.asList(

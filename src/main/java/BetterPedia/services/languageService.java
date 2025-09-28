@@ -1,4 +1,4 @@
-package org.example.asd.services;
+package BetterPedia.services;
 
 public class languageService {
 }

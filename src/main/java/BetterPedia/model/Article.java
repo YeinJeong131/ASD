@@ -1,4 +1,4 @@
-package org.example.asd.model;
+package BetterPedia.model;
 
 import java.time.LocalDate;
 import java.util.List;

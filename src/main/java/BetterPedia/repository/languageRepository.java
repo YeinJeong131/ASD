@@ -1,4 +1,4 @@
-package org.example.asd.repository;
+package BetterPedia.repository;
 
 public class languageRepository {
 }
