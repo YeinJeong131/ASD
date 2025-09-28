@@ -1,4 +1,4 @@
-package org.example.asd.services;
+package BetterPedia.services;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -9,8 +9,8 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
-import org.example.asd.model.Article;
-import org.example.asd.repository.ArticleRepository;
+import BetterPedia.model.Article;
+import BetterPedia.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 
 

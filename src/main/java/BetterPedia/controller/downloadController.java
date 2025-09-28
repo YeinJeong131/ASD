@@ -1,6 +1,7 @@
-package org.example.asd.controller;
-import org.example.asd.model.Article;
-import org.example.asd.services.downloadService;
+package BetterPedia.controller;
+
+import BetterPedia.model.Article;
+import BetterPedia.services.downloadService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

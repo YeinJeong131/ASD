@@ -1,8 +1,12 @@
-package org.example.asd.controller;
+package BetterPedia.controller;
 
-import org.example.asd.model.Article;
-import org.example.asd.repository.ArticleRepository;
-import org.springframework.web.bind.annotation.*;
+
+
+import BetterPedia.model.Article;
+import BetterPedia.repository.ArticleRepository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
