@@ -17,7 +17,41 @@
 
 <input id="search_by_word" placeholder="search by word">
 <button id="button_search">Search</button>
-<button>Does this exist</button>
+<br/>
+<select id="select_language">
+    <option value="ENGLISH">English</option>
+    <option value="PERSIAN">Persian</option>
+    <option value="FRENCH">French</option>
+    <option value="KOREAN">KOREAN</option>
+    <option value="GERMAN">German</option>
+    <option value="CHINESE">Chinese </option>
+    <option value="JAPANESE">Japanese</option>
+    <option value="HINDI">Hindi</option>
+    <option value="RUSSIAN">Russian</option>
+</select>
+<button id="save_lan">Save language for this article</button>
+<script>
+    const getArticleID = () =>
+        document.body.dataset.articleID;
+
+    document.getElementById("save_lan").addEventListener("click", async () => {
+        const articleId = 1;
+        const lan = document.getElementById("select_language").value.trim().toUpperCase();
+
+        try{
+            const response = await fetch(`/api/articles/${encodeURIComponent(articleId)}/language?lan=${encodeURIComponent(lan)}`,
+                { method: "PUT" });
+            const message = await response.text();
+            if (response.ok) alert("Done");
+            else alert(message);
+        } catch (error) {
+            alert(error);
+        }
+    });
+
+
+</script>
+
 <div id="results"></div>
 
 <script src="script.js"></script>

@@ -2,23 +2,17 @@ package org.example.asd.repository;
 
 import org.example.asd.model.Article;
 import org.example.asd.model.Language;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-public class ArticleRepository {
-    private final List<Article> data = Arrays.asList(
-            new Article(1L, "DummyTitle", "This is dummy text, lol", Arrays.asList("Davey", "Other group members: Group 10"), LocalDate.of(2025,9,3), List.of("Dummy"), Language.ENGLISH)
-    );
+public interface ArticleRepository extends JpaRepository<Article, Long> {
 
-    public Article findById(Long id) {
-        return this.data.stream().filter(a -> a.id().equals(id)).findFirst().orElse(null);
-    }
-    public List<Article> getThemAll(){
-        return this.data;
-    }
+    Optional<Article> findByTitle(String title);
 
+    List<Article> findAllByTitle(String title);
+
+    List<Article> findAllByTitleContainingIgnoreCase(String q);
 }
+
