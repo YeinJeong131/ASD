@@ -7,17 +7,81 @@
 </head>
 <body>
 <h1>Articles</h1>
+<!-- dropdown of titles -->
+<label for="articleSelect">choose an article:</label>
+<select id="articleSelect">
+    <option value="">-- select --</option>
+</select>
 
-<iframe src="/api/articles" style="width:100%;height:40vh;border:0"></iframe>
+<!-- details -->
+<div id="articleDetails" style="margin-top:1em; padding:1em; border:1px solid #ccc"></div>
+
+<script type="module">
+    const select = document.getElementById('articleSelect');
+    const details = document.getElementById('articleDetails');
+
+    async function loadArticles() {
+        try {
+            const res = await fetch('http://localhost:8080/articles'); // adjust port if needed
+            if (!res.ok) throw new Error('failed to fetch articles');
+            const articles = await res.json();
+
+            // fill dropdown
+            articles.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a.id;
+                opt.textContent = a.title;
+                select.appendChild(opt);
+            });
+
+            // listen for selection
+            select.addEventListener('change', () => {
+                const id = select.value;
+                if (!id) {
+                    details.innerHTML = '';
+                    return;
+                }
+                const article = articles.find(x => x.id == id);
+                if (article) {
+                    details.innerHTML = `
+              <h2>${article.title}</h2>
+              <p><em>by ${article.author} (${article.lan || 'en'})</em></p>
+              <p>${article.body || ''}</p>
+              <p><small>published: ${article.publishDate || 'unknown'}</small></p>
+              <p><small>tags: ${article.tags || ''}</small></p>
+            `;
+                }
+            });
+        } catch (e) {
+            console.error(e);
+            details.textContent = 'could not load articles';
+        }
+    }
+
+    loadArticles();
+</script>
+
+
 
 <button id="button_download_as_txt">Download as a simple .txt file</button>
 <br/>
 <button id="button_download_as_pdf">Download as a pdf file</button>
 <br/>
-
 <input id="search_by_word" placeholder="search by word">
 <button id="button_search">Search</button>
 <button>Does this exist</button>
+<br/>
+
+<button id="voice">Text to voice</button>
+<script type="module">
+    import { textToVoice } from './toVoice.js';
+    textToVoice({
+        buttonSelector: '#voice',
+        inputSelector: '#text',
+        rate: 1, pitch: 1, volume: 1
+    });
+</script>
+
 <div id="results"></div>
 
 <script src="script.js"></script>

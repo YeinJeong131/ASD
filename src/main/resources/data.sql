@@ -1,2 +1,3 @@
+use wiki;
 insert into article(title, body, publish_date, author, tags)  values
     ('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2'))
