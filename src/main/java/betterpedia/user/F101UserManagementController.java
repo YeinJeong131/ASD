@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class F101UserManagementController {
 
-//    // Default home → goes to login page for R0
-//    @GetMapping("/")
-//    public String home() {
-//        return "login";
-//    }
+    // Default home → goes to login page for R0
+    @GetMapping("/")
+    public String home() {
+        return "login";
+    }
 
     @GetMapping("/login")
     public String login(Model model) {
