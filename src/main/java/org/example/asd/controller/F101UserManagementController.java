@@ -1,4 +1,4 @@
-package betterpedia.user;
+package org.example.asd.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +9,7 @@ public class F101UserManagementController {
 
     // Default home → goes to login page for R0
     @GetMapping("/")
-    public String home() {
+    public String loginPage() {
         return "login";
     }
 
