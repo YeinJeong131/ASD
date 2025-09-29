@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <title th:text="${pageTitle} ?: 'Account Settings'">Account Settings</title>
-
     <style>
         body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
         header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
@@ -20,7 +19,6 @@
         .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
         nav a{margin-right:8px;text-decoration:none;color:#111827}
     </style>
-
 </head>
 <body>
 <header>
@@ -36,8 +34,6 @@
 
 <main class="wrap">
     <div class="grid">
-
-<!--        PROFILE-->
         <section class="card">
             <h2>Profile</h2>
             <div class="row">
@@ -58,9 +54,8 @@
                 <button>Save profile</button>
                 <button class="ghost" title="UI only">Cancel</button>
             </div>
-
         </section>
-<!--SECURITY-->
+
         <section class="card">
             <h2>Security</h2>
             <label>Current password</label>
@@ -82,8 +77,6 @@
                 <button class="ghost" title="UI only">Forgot password?</button>
             </div>
         </section>
-
-
     </div>
 </main>
 </body>

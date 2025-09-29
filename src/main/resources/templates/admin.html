@@ -20,21 +20,19 @@
   </style>
 </head>
 
-
 <body>
 <header>
   <div class="wrap">
     <strong>Betterpedia</strong>
     <nav style="float:right">
-      <a href="/login">Login</a>
-      <a href="/account">Account</a>
-      <a href="/admin">Admin</a>
+      <a th:href="@{/login}">Login</a>
+      <a th:href="@{/account}">Account</a>
+      <a th:href="@{/admin}">Admin</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-
   <div class="card">
     <div class="row" style="justify-content:space-between;">
       <div class="row">
@@ -70,7 +68,6 @@
       </tr>
       </thead>
       <tbody>
-<!--      manual dataaaaa-->
       <tr>
         <td>Esha Writer</td>
         <td>esha.writer@example.com</td>
@@ -95,8 +92,6 @@
       </tbody>
     </table>
   </div>
-
-
 </main>
 </body>
 </html>
