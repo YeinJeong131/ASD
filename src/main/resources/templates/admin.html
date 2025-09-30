@@ -2,95 +2,99 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin • User Management</title>
+  <title th:text="${pageTitle} ?: 'Admin'">Admin</title>
   <style>
-    body {font-family: ui-sans-serif, system-ui, Arial; margin:0; background:#f6f8fb; color:#0f172a;}
-    header {padding:16px 20px; background:#fff; border-bottom:1px solid #e5e7eb;}
-    .wrap {max-width:1100px; margin:24px auto; padding:0 16px;}
-    .grid {display:grid; grid-template-columns: 1fr; gap:16px;}
-    .card {background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04);}
-    .row {display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
-    input, select {padding:10px; border:1px solid #e5e7eb; border-radius:10px;}
-    button {padding:10px 12px; border-radius:10px; border:0; background:#111827; color:#fff; cursor:pointer;}
-    button.ghost {background:#fff; color:#111827; border:1px solid #e5e7eb;}
-    table {width:100%; border-collapse:collapse; margin-top:8px;}
-    th, td {text-align:left; padding:10px; border-bottom:1px solid #e5e7eb; font-size:14px;}
-    .badge {display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid #e5e7eb; font-size:12px;}
-    nav a {margin-right:12px; text-decoration:none; color:#111827;}
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
+    header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
+    .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+    h1{margin:0 0 12px 0}
+    form.card, .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:16px}
+    label{display:block;font-size:14px;margin-top:10px}
+    input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1}
+    .actions{margin-top:12px;display:flex;gap:8px}
+    button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
+    .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    th,td{padding:12px 14px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:14px}
+    th{background:#f8fafc;font-weight:600;color:#334155}
+    tr:last-child td{border-bottom:0}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
+    .ok{background:#ecfdf5;color:#065f46}
+    .no{background:#fef2f2;color:#991b1b}
+    nav a{margin-right:8px;text-decoration:none;color:#111827}
+    .msg{color:#065f46;margin:10px 0}
+    .hint{font-size:12px;color:#64748b;margin-top:8px}
   </style>
 </head>
-
 <body>
 <header>
   <div class="wrap">
     <strong>Betterpedia</strong>
     <nav style="float:right">
       <a th:href="@{/login}">Login</a>
-      <a th:href="@{/account}">Account</a>
       <a th:href="@{/admin}">Admin</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <div class="card">
-    <div class="row" style="justify-content:space-between;">
-      <div class="row">
-        <input placeholder="Search users by name or email" style="min-width:260px;" />
-        <select>
-          <option>All roles</option>
-          <option>Viewer</option>
-          <option>User</option>
-          <option>Admin</option>
-        </select>
-        <select>
-          <option>Status: Any</option>
-          <option>Active</option>
-          <option>Suspended</option>
-        </select>
+  <h1>Admin · Users</h1>
+
+  <p th:if="${msg}" class="msg" th:text="${msg}"></p>
+
+  <!-- Create user -->
+  <form th:action="@{/admin/users}" method="post" class="card">
+    <h2 style="margin:0 0 8px 0;">Create user</h2>
+    <div class="row">
+      <div>
+        <label>Email</label>
+        <input name="email" type="email" placeholder="user@example.com" required />
       </div>
-      <div class="row">
-        <button title="UI only">+ Create User</button>
+      <div>
+        <label>Password</label>
+        <input name="password" type="password" placeholder="changeme" required />
+      </div>
+      <div style="flex:0 0 160px;align-self:flex-end;">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:0;">
+          <input type="checkbox" name="enabled" />
+          <span>Enabled</span>
+        </label>
       </div>
     </div>
-  </div>
+    <div class="actions">
+      <button type="submit">Create</button>
+      <button type="reset" class="ghost">Clear</button>
+    </div>
+    <p class="hint">Default role: <code>ROLE_USER</code>. Security & hashing come later.</p>
+  </form>
 
-  <div class="card">
-    <h2 style="margin:0 0 8px 0;">Users</h2>
-    <table>
-      <thead>
-      <tr>
-        <th style="width:28%">Name</th>
-        <th style="width:28%">Email</th>
-        <th style="width:12%">Role</th>
-        <th style="width:12%">Status</th>
-        <th style="width:20%">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>Esha Writer</td>
-        <td>esha.writer@example.com</td>
-        <td>User</td>
-        <td>Active</td>
-        <td class="row">
-          <button class="ghost" title="UI only">Edit</button>
-          <button class="ghost" title="UI only">Reset PW</button>
-          <button class="ghost" title="UI only">Suspend</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Esha Admin</td>
-        <td>esha.admin@example.com</td>
-        <td>Admin</td>
-        <td>Active</td>
-        <td class="row">
-          <button class="ghost" title="UI only">Edit</button>
-          <button class="ghost" title="UI only">Deactivate</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <!-- Users table -->
+  <table class="card" th:if="${!#lists.isEmpty(users)}">
+    <thead>
+    <tr>
+      <th style="width:70px;">ID</th>
+      <th>Email</th>
+      <th>Password (dev)</th>
+      <th style="width:120px;">Enabled</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="u : ${users}">
+      <td th:text="${u.id}">1</td>
+      <td th:text="${u.email}">user@example.com</td>
+      <td th:text="${u.password}">changeme</td>
+      <td>
+          <span class="pill" th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'"
+                th:classappend="${u.enabled} ? ' ok' : ' no'">ENABLED</span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div th:if="${#lists.isEmpty(users)}" class="card">
+    <p>No users found.</p>
   </div>
 </main>
 </body>
