@@ -1,6 +1,6 @@
-package BetterPedia.controller;
+package betterpedia.controller;
 
-import BetterPedia.services.DownloadService;
+import betterpedia.services.DownloadService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

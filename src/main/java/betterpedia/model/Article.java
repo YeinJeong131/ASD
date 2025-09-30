@@ -1,4 +1,4 @@
-package BetterPedia.model;
+package betterpedia.model;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,7 @@
-package BetterPedia.controller;
+package betterpedia.controller;
 
-import BetterPedia.model.Article;
-import BetterPedia.repository.ArticleRepository;
+import betterpedia.model.Article;
+import betterpedia.repository.ArticleRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

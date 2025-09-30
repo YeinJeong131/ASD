@@ -1,8 +1,8 @@
-package BetterPedia.controller;
+package betterpedia.controller;
 
-import BetterPedia.model.Article;
-import BetterPedia.repository.ArticleRepository;
-import BetterPedia.services.DownloadService;
+import betterpedia.model.Article;
+import betterpedia.repository.ArticleRepository;
+import betterpedia.services.DownloadService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

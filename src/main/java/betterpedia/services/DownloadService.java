@@ -1,11 +1,10 @@
-package BetterPedia.services;
+package betterpedia.services;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import BetterPedia.model.Article;
-import BetterPedia.repository.ArticleRepository;
+import betterpedia.model.Article;
+import betterpedia.repository.ArticleRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;

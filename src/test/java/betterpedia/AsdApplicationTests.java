@@ -1,4 +1,4 @@
-package BetterPedia;
+package betterpedia;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
