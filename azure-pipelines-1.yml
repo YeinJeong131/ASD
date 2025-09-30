@@ -21,8 +21,7 @@ steps:
   inputs:
     script: |
       chmod +x ./gradlew
-      ./gradlew clean test --no-daemon \
-        --tests "betterpedia.controller.DownloadControllerTest" \
+      ./gradlew :test
 
 - task: PublishTestResults@2
   displayName: Publish JUnit
