@@ -1,8 +1,6 @@
 use wiki;
 insert into article(title, body, publish_date, author, tags)  values
-<<<<<<< HEAD
-('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2'))
-=======
+('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2')),
 ('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2')),
 ('Java (programming language)',
 'This article is copied from Wikipedia\nThis article is about the object-oriented programming language. For the software platform, see Java (software platform). For the Indonesian island, see Java. For the Indonesian Language, see Javanese. For other uses, see Java (disambiguation). Not to be confused with JavaScript.
@@ -11,4 +9,3 @@ Java gained popularity shortly after its release, and has been a popular program
 Java was designed by James Gosling at Sun Microsystems. It was released in May 1995 as a core component of Sun''s Java platform. The original and reference implementation Java compilers, virtual machines, and class libraries were released by Sun under proprietary licenses. As of May 2007, in compliance with the specifications of the Java Community Process, Sun had relicensed most of its Java technologies under the GPL-2.0-only license. Oracle, which bought Sun in 2010, offers its own HotSpot Java Virtual Machine. However, the official reference implementation is the OpenJDK JVM, which is open-source software used by most developers and is the default JVM for almost all Linux distributions.
 Java 25 is the version current as of September 2025. Java 8, 11, 17, 21, and 25 are long-term support versions still under maintenance.',
 '2020-5-5', json_array('Wikipedia'), json_array('java', 'programming'));
->>>>>>> nima_Featuress

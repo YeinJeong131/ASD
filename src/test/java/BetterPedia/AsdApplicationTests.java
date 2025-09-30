@@ -8,7 +8,6 @@ class AsdApplicationTests {
 
 	@Test
 	void contextLoads() {
-		assert true;
 	}
 
 }
