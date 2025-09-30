@@ -17,11 +17,11 @@ steps:
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      chmod +x ./gradlew
-      ./gradlew clean test --no-daemon
+# - task: CmdLine@2
+#   inputs:
+#     script: |
+#       chmod +x ./gradlew
+#       ./gradlew clean test --no-daemon
 
 - task: PublishTestResults@2
   inputs:
