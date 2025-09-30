@@ -8,6 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/articles")
+@CrossOrigin(origins = {"http://localhost:5500","http://127.0.0.1:5500","http://localhost:3000","http://localhost:8080","*"})
 public class ArticleController {
 
     private final ArticleRepository articleRepository;
@@ -29,5 +30,11 @@ public class ArticleController {
     @GetMapping("/{id}")
     public Article getOne(@PathVariable Long id) {
         return articleRepository.findById(id).orElseThrow();
+    }
+
+    @GetMapping("/search/author")
+    public List<String> searchByAuthor(@RequestParam("authorName") String authorName) {
+        if (authorName == null || authorName.isEmpty()) return List.of();
+        return articleRepository.findTitleByAuth(authorName);
     }
 }

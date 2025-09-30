@@ -3,7 +3,6 @@ package BetterPedia.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "article")
@@ -15,7 +14,7 @@ public class Article{
     @Column(columnDefinition = "longtext") private String body;
     private String author;
     private String tags;
-    private LocalDate date;
+    @Column(name = "publish_date") private LocalDate publish_date;
 
     public Long getId(){return id;}
     public void setId(Long id){this.id = id;}
@@ -27,8 +26,8 @@ public class Article{
     public void setAuthor(String author){this.author = author;}
     public String getTags(){return tags;}
     public void setTags(String tags){this.tags = tags;}
-    public LocalDate getDate(){return date;}
-    public void setDate(LocalDate date){this.date = date;}
+    public LocalDate getPublishdate(){return publish_date;}
+    public void setPublishdate(LocalDate publish_date){this.publish_date = publish_date;}
 
 
 
