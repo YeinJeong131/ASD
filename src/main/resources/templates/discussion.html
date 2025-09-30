@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Discussion</title>
-</head>
+<!-- templates/discussion.html -->
+<html>
+<head><title>Discussion</title></head>
 <body>
-<h2>Discussion for Article [[${articleId}]]</h2>
+<h1>Discussion for Article #${articleId}</h1>
 
-<form th:action="@{/discussion}" th:object="${comment}" method="post">
-    <input type="hidden" th:field="*{articleId}" th:value="${articleId}"/>
-    <input type="text" th:field="*{username}" placeholder="Your name" required/><br>
-    <textarea th:field="*{content}" placeholder="Write your comment" rows="4" cols="50" required></textarea><br>
+<form method="post">
+    <input type="text" name="username" placeholder="Your name" required>
+    <br>
+    <textarea name="content" placeholder="Write your comment..." required></textarea>
+    <br>
     <button type="submit">Post Comment</button>
 </form>
 
-<hr>
-
-<h3>Previous Comments</h3>
+<h2>Comments:</h2>
 <ul>
-    <li th:each="c : ${comments}">
-        <strong th:text="${c.username}">Name</strong>:
-        <span th:text="${c.content}">Comment</span>
-        <br><small th:text="${#dates.format(c.timestamp, 'dd MMM yyyy HH:mm')}"></small>
+    <li th:each="comment : ${comments}">
+        <b th:text="${comment.username}"></b> says:
+        <p th:text="${comment.content}"></p>
+        <i th:text="${#dates.format(comment.timestamp, 'yyyy-MM-dd HH:mm')}"></i>
     </li>
 </ul>
 </body>
