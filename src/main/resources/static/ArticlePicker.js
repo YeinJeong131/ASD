@@ -29,13 +29,13 @@ function showArticleByID(id){
     if (!a) { det.innerHTML = ''; voiceBtn.disabled = true; return; }   // NEW
 
     det.innerHTML = `
-    <h2>${a.title ?? ''}</h2>
-    <p><em>by ${a.author ?? ''}</em></p>
-    <p>${(a.body ?? '').replace(/\n/g,'<br>')}</p>
-    <p><small>published: ${a.publishDate ?? ''}</small></p>
+    <h2>${a.title}</h2>
+    <p><em>by ${a.author}</em></p>
+    <p>${(a.body).replace(/\n/g,'<br>')}</p>
+    <p>published: ${a.publishDate}</p>
   `;
 
-    const body = (a.body ?? '').replace(/\s+/g,' ').trim();
+    const body = (a.body).replace(/\s+/g,' ').trim();
     voiceBtn.dataset.text = body;
     voiceBtn.disabled = !body;
     document.getElementById('readingTime').textContent = readingTime(body);  // <-- add this

@@ -22,6 +22,7 @@ public class DownloadService {
 
     public byte[] make_txt_file(Long id){
         Article article = articleRepository.findById(id).orElse(null);
+        if (article == null) return null;
         String title = article.getTitle();
         String author = article.getAuthor();
         LocalDate date = article.getPublishdate();
@@ -35,6 +36,7 @@ public class DownloadService {
 
     public byte[] make_pdf_file(Long id){
         Article article = articleRepository.findById(id).orElse(null);
+        if (article == null) return null;
         String title = article.getTitle();
         String author = article.getAuthor();
         LocalDate date = article.getPublishdate();
