@@ -10,52 +10,23 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-
-- task: JavaToolInstaller@1
+- task: JavaToolInstaller@0
   inputs:
     versionSpec: '21'
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
-
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      docker run -d --name mysql \
-              -e MYSQL_ROOT_PASSWORD=root \
-              -e MYSQL_DATABASE=betterpedia \
-              -e MYSQL_USER=wiki\
-              -e MYSQL_PASSWORD=wiki\
-              -p 3306:3306 \
-              mysql:8.0 --default-authentication-plugin=mysql_native_password
-      
-            echo "Waiting for MySQL to be ready..."
-            for i in {1..60}; do
-              docker exec mysql mysqladmin ping -h 127.0.0.1 -uroot -proot --silent && break
-              sleep 2
-            done
-      
-            docker exec mysql mysql -uroot -proot -e "
-              CREATE DATABASE IF NOT EXISTS betterpedia;
-              CREATE USER IF NOT EXISTS 'bpuser'@'%' IDENTIFIED BY 'bp_pass';
-              GRANT ALL PRIVILEGES ON betterpedia.* TO 'bpuser'@'%';
-              FLUSH PRIVILEGES;"
 
 - task: CmdLine@2
   displayName: Run Gradle tests
   inputs:
     script: |
       chmod +x ./gradlew
-      ./gradlew clean test --no-daemon --info --stacktrace \
-        -Dspring.datasource.url="jdbc:mysql://127.0.0.1:3306/betterpedia?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" \
-        -Dspring.datasource.username=bpuser \
-        -Dspring.datasource.password=bp_pass
+      ./gradlew clean test --no-daemon
 
 - task: PublishTestResults@2
+  displayName: Publish JUnit
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/build/test-results/test/TEST-*.xml'
     failTaskOnFailedTests: true
-    failTaskOnFailureToPublishResults: true
-    failTaskOnMissingResultsFile: true
-    testRunTitle: 'Unit tests'
+    testRunTitle: 'Unit Tests'
