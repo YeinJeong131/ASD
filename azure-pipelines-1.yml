@@ -17,11 +17,14 @@ steps:
     jdkSourceOption: 'PreInstalled'
 
 - task: CmdLine@2
-  displayName: Run unit tests
+  displayName: Run Gradle :test
+  env:
+    CI: 'true'
   inputs:
     script: |
       chmod +x ./gradlew
       ./gradlew :test --no-daemon
+
 
 - task: PublishTestResults@2
   displayName: Publish JUnit
