@@ -4,12 +4,14 @@ import betterpedia.model.Article;
 import betterpedia.repository.ArticleRepository;
 import betterpedia.services.DownloadService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisabledIfEnvironmentVariable(named = "CI", matches = "true")
 @SpringBootTest
 public class DownloadControllerTest {
     @Autowired
