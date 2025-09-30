@@ -9,14 +9,49 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- task: Gradle@3
-  inputs:
-    gradleWrapperFile: 'gradlew'  # Path to your Gradle wrapper
-    tasks: 'build'  # Replace with the tasks you want to run
-    options: '-Xmx3072m' 
-    publishJUnitResults: true
-    testResultsFiles: '**/TEST-*.xml'  # Updated pattern for test result files
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'  # Replace with your JDK version
-    jdkArchitectureOption: 'x64'
+stages:
+- stage: ci
+  jobs:
+  - job: build_and_test
+    steps:
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '21'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+
+    - task: Cache@2
+      inputs:
+        key: 'gradle | "$(Agent.OS)" | **/gradle/wrapper/gradle-wrapper.properties'
+        restoreKeys: 'gradle | "$(Agent.OS)"'
+        path: ~/.gradle
+
+    - script: chmod +x gradlew
+      displayName: Make gradlew executable
+
+    - task: Gradle@3
+      displayName: Gradle build (runs unit tests)
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'build'
+        options: >-
+          --no-daemon
+          -Dorg.gradle.jvmargs="-Xmx1024m -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
+          -Dorg.gradle.workers.max=2
+          --info
+        publishJUnitResults: true
+        testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+
+
+
+# steps:
+# - task: Gradle@3
+#   inputs:
+#     gradleWrapperFile: 'gradlew'  # Path to your Gradle wrapper
+#     tasks: 'build'  # Replace with the tasks you want to run
+#     options: '-Xmx3072m' 
+#     publishJUnitResults: true
+#     testResultsFiles: '**/TEST-*.xml'  # Updated pattern for test result files
+#     javaHomeOption: 'JDKVersion'
+#     jdkVersionOption: '1.11'  # Replace with your JDK version
+#     jdkArchitectureOption: 'x64'
