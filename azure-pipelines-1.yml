@@ -17,11 +17,11 @@ steps:
     jdkSourceOption: 'PreInstalled'
 
 - task: CmdLine@2
-  displayName: Run only unit tests
+  displayName: Run unit tests
   inputs:
     script: |
       chmod +x ./gradlew
-      ./gradlew :test
+      ./gradlew :test --no-daemon
 
 - task: PublishTestResults@2
   displayName: Publish JUnit
