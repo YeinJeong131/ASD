@@ -11,10 +11,26 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '21'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+- task: CmdLine@2
+  displayName: Run Gradle tests
+  inputs:
+    script: |
+      chmod +x ./gradlew
+      ./gradlew clean test --no-daemon
+
+# run even if tests fail so files still publish
 - task: PublishTestResults@2
+  displayName: Publish JUnit
+  condition: succeededOrFailed()
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
     failTaskOnFailedTests: true
-    failTaskOnFailureToPublishResults: true
-    failTaskOnMissingResultsFile: true
+    testRunTitle: 'Unit Tests'
