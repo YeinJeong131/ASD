@@ -46,7 +46,9 @@ steps:
       ./gradlew clean test --no-daemon \
       -Dspring.datasource.url="jdbc:mysql://127.0.0.1:3306/betterpedia?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" \
       -Dspring.datasource.username=wiki \
-      -Dspring.datasource.password=wiki
+      -Dspring.datasource.password=wiki \
+      -Dspring.sql.init.mode=never \
+      -Dspring.jpa.hibernate.ddl-auto=create-drop
 
 
 # Publish JUnit test results
