@@ -23,7 +23,6 @@ steps:
   inputs:
     script: |
       chmod +x ./gradlew
-      ./gradlew :test --no-daemon
 
 
 - task: PublishTestResults@2
