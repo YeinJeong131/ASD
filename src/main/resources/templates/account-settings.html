@@ -56,7 +56,6 @@
 
         <!-- Password -->
         <form th:action="@{/account/password}" method="post" class="card">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input type="hidden" name="uid" th:value="${user.id}" />
 
             <h2>Security</h2>
