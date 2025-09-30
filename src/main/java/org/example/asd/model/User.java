@@ -21,6 +21,8 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -71,4 +73,5 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
 }
