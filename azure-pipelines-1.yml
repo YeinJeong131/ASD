@@ -22,7 +22,7 @@ steps:
     script: |
       chmod +x ./gradlew
       ./gradlew clean test --no-daemon \
-        --tests "BetterPedia.controller.DownloadControllerTest" \
+        --tests "betterpedia.controller.DownloadControllerTest" \
 
 - task: PublishTestResults@2
   displayName: Publish JUnit
