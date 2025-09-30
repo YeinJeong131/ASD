@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisabledIfEnvironmentVariable(named = "CI", matches = "true")
 @SpringBootTest
 public class DownloadControllerTest {
     @Autowired
