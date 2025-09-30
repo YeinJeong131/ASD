@@ -6,27 +6,79 @@
 trigger:
 - main
 
+
 pool:
   vmImage: ubuntu-latest
 
 steps:
+# Install Java 21
 - task: JavaToolInstaller@0
   inputs:
     versionSpec: '21'
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
+# Start MySQL 8 in Docker
+- task: Bash@3
+  displayName: Start MySQL
+  inputs:
+    targetType: inline
+    script: |
+      docker run -d --name mysql \
+        -e MYSQL_ROOT_PASSWORD=root \
+        -e MYSQL_DATABASE=betterpedia \
+        -e MYSQL_USER=wiki \
+        -e MYSQL_PASSWORD=wiki \
+        -p 3306:3306 \
+        mysql:8.0 --default-authentication-plugin=mysql_native_password
+
+      echo "Waiting for MySQL..."
+      for i in {1..60}; do
+        docker exec mysql mysqladmin ping -h127.0.0.1 -uroot -proot --silent && break
+        sleep 2
+      done
+
+# Run Gradle tests, pointing to that DB
 - task: CmdLine@2
-  displayName: Run Gradle tests
   inputs:
     script: |
       chmod +x ./gradlew
-      ./gradlew clean test --no-daemon
+      ./gradlew clean test --no-daemon \
+      -Dspring.datasource.url="jdbc:mysql://127.0.0.1:3306/betterpedia?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" \
+      -Dspring.datasource.username=wiki \
+      -Dspring.datasource.password=wiki
 
+
+# Publish JUnit test results
 - task: PublishTestResults@2
-  displayName: Publish JUnit
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/build/test-results/test/TEST-*.xml'
     failTaskOnFailedTests: true
-    testRunTitle: 'Unit Tests'
+
+
+
+# pool:
+#   vmImage: ubuntu-latest
+
+# steps:
+# - task: JavaToolInstaller@0
+#   inputs:
+#     versionSpec: '21'
+#     jdkArchitectureOption: 'x64'
+#     jdkSourceOption: 'PreInstalled'
+
+# - task: CmdLine@2
+#   displayName: Run Gradle tests
+#   inputs:
+#     script: |
+#       chmod +x ./gradlew
+#       ./gradlew clean test --no-daemon
+
+# - task: PublishTestResults@2
+#   displayName: Publish JUnit
+#   inputs:
+#     testResultsFormat: 'JUnit'
+#     testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+#     failTaskOnFailedTests: true
+#     testRunTitle: 'Unit Tests'
