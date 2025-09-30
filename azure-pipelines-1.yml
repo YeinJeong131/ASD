@@ -10,35 +10,24 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: JavaToolInstaller@0
+
+- task: JavaToolInstaller@1
   inputs:
     versionSpec: '21'
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
 - task: CmdLine@2
-  displayName: Gradle clean build
   inputs:
     script: |
-      gradlew.bat clean build --no-daemon
+      chmod +x ./gradlew
+      ./gradlew clean test --no-daemon
 
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**\build\test-results\test\TEST-*.xml'
+    testResultsFiles: '**/build/test-results/test/TEST-*.xml'
     failTaskOnFailedTests: true
-
-
-# steps:
-# - task: Gradle@3
-#   inputs:
-#     gradleWrapperFile: 'gradlew'  # Path to your Gradle wrapper
-#     tasks: 'test'  # Replace with the tasks you want to run
-#     options: >-
-#       --no-daemon
-#       -Dorg.gradle.jvmargs="-Xmx1024m -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
-#     publishJUnitResults: true
-#     testResultsFiles:  '**/build/test-results/test/TEST-*.xml'  # Updated pattern for test result files
-#     javaHomeOption: 'JDKVersion'
-#     jdkVersionOption: '1.8'  # Replace with your JDK version
-#     jdkArchitectureOption: 'x64'
+    failTaskOnFailureToPublishResults: true
+    failTaskOnMissingResultsFile: true
+    testRunTitle: 'Unit tests'
