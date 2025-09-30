@@ -4,7 +4,7 @@ console.log(download_pdf);
 console.log("TEST");
 
 download_simple_txt.onclick = () => {
-    window.location.href = "/api/download/1/txt";
+    window.location.href = "/download/txt/1";
     console.log("\nThe button was clicked\n");
 }
 
