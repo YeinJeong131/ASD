@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${pageTitle} ?: 'Articles'">Articles</title>
+    <style>
+        body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
+        .wrap{max-width:900px;margin:40px auto;padding:0 16px}
+        .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    </style>
+</head>
+<body>
+<main class="wrap">
+    <div class="card">
+        <h1>Articles</h1>
+        <p>Logged in as <strong th:text="${email}">someone@example.com</strong>.</p>
+        <p>This is a placeholder page.</p>
+        <p><a href="/account">Go to Account</a> · <a href="/admin">Admin</a></p>
+        <form action="/logout" method="post" style="margin-top:10px">
+            <button>Sign out</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

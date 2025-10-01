@@ -1,12 +1,9 @@
 package org.example.asd.controller;
 
-import org.example.asd.model.User;
 import org.example.asd.services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -20,27 +17,10 @@ public class F101UserManagementController {
         this.userService = userService;
     }
 
-    // Root: go to the first user
     @GetMapping("/")
-    public String home() {
-        Long uid = userService.listAll().stream()
-                .findFirst()
-                .map(User::getId)
-                .orElse(null);
-        if (uid == null) return "redirect:/login";
-        return "redirect:/account?uid=" + uid;
-    }
+    public String home() { return "redirect:/login"; }
 
-    // Account settings page
-    @GetMapping("/account")
-    public String accountSettings(@RequestParam("uid") Long uid, Model model) {
-        User u = userService.getById(uid);
-        model.addAttribute("pageTitle", "Account Settings");
-        model.addAttribute("user", u);
-        return "account-settings";
-    }
-
-    // Save profile (email only)
+    // ----- Account (POST only) -----
     @PostMapping("/account/profile")
     public String saveProfile(@RequestParam Long uid,
                               @RequestParam String email,
@@ -50,7 +30,6 @@ public class F101UserManagementController {
         return "redirect:/account?uid=" + uid;
     }
 
-    // Change password
     @PostMapping("/account/password")
     public String changePassword(@RequestParam Long uid,
                                  @RequestParam String newPassword,
@@ -60,7 +39,14 @@ public class F101UserManagementController {
         return "redirect:/account?uid=" + uid;
     }
 
-    // Admin list
+    @PostMapping("/account/delete")
+    public String deleteMyAccount(@RequestParam Long uid, RedirectAttributes ra) {
+        userService.deleteUser(uid);
+        ra.addFlashAttribute("msg", "Your account was deleted");
+        return "redirect:/login";
+    }
+
+    // ----- Admin -----
     @GetMapping("/admin")
     public String adminPage(Model model) {
         model.addAttribute("pageTitle", "Admin");
@@ -68,7 +54,6 @@ public class F101UserManagementController {
         return "admin";
     }
 
-    // Admin: Create user (defaults to ROLE_USER)
     @PostMapping("/admin/users")
     public String createUser(@RequestParam String email,
                              @RequestParam String password,
@@ -79,7 +64,38 @@ public class F101UserManagementController {
         return "redirect:/admin";
     }
 
-    // Just render templates
-    @GetMapping("/login")
-    public String loginPage() { return "login"; }
+    @PostMapping("/admin/users/{id}/toggle")
+    public String toggleEnabled(@PathVariable Long id, RedirectAttributes ra) {
+        boolean nowEnabled = userService.toggleEnabled(id);
+        ra.addFlashAttribute("msg", "User " + id + " is now " + (nowEnabled ? "ENABLED" : "DISABLED"));
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/users/{id}/edit")
+    public String editUserForm(@PathVariable Long id, Model model) {
+        model.addAttribute("pageTitle", "Edit User");
+        model.addAttribute("user", userService.getById(id));
+        return "admin-edit-user";
+    }
+
+    @PostMapping("/admin/users/{id}/edit")
+    public String updateUser(@PathVariable Long id,
+                             @RequestParam String email,
+                             @RequestParam(required = false) String password,
+                             RedirectAttributes ra) {
+        userService.updateProfile(id, email);
+        if (password != null && !password.isBlank()) {
+            userService.changePassword(id, password);
+        }
+        ra.addFlashAttribute("msg", "User updated");
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/users/{id}/delete")
+    public String deleteUser(@PathVariable Long id, RedirectAttributes ra) {
+        userService.deleteUser(id);
+        ra.addFlashAttribute("msg", "User deleted");
+        return "redirect:/admin";
+    }
+
 }

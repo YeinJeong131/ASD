@@ -9,16 +9,20 @@
         .wrap{max-width:960px;margin:24px auto;padding:0 16px}
         .grid{display:grid;grid-template-columns:1fr;gap:16px}
         .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-        h2{margin:0 0 10px 0}
+        h1,h2{margin:0 0 10px 0}
         label{display:block;font-size:14px;margin-top:12px}
-        input,select{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
+        input{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
         .row{display:flex;gap:8px;flex-wrap:wrap}
         .row > *{flex:1}
         .actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
         button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
         .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
-        nav a{margin-right:8px;text-decoration:none;color:#111827}
-        .msg{color:#065f46;margin-bottom:12px}
+        nav a{margin-left:12px;text-decoration:none;color:#111827}
+        .msg{color:#065f46;margin:10px 0}
+        .danger{border-color:#fecaca}
+        .danger h2{color:#991b1b}
+        .danger button{background:#991b1b}
+        .hint{font-size:12px;color:#64748b;margin-top:6px}
     </style>
 </head>
 <body>
@@ -26,52 +30,65 @@
     <div class="wrap">
         <strong>Betterpedia</strong>
         <nav style="float:right">
-            <a th:href="@{/login}">Login</a>
-            <a th:href="@{/account(uid=${user.id})}">Account</a>
-            <a th:href="@{/admin}">Admin</a>
+            <a th:href="@{/login}">Sign out</a>
         </nav>
     </div>
 </header>
 
 <main class="wrap">
+    <h1>Account Settings</h1>
+    <p th:if="${msg}" class="msg" th:text="${msg}"></p>
+
     <div class="grid">
-
-        <!-- Flash message -->
-        <p th:if="${msg}" class="msg" th:text="${msg}"></p>
-
-        <!-- Profile (email only) -->
-        <form th:action="@{/account/profile}" method="post" class="card" style="margin-bottom:12px;">
-            <input type="hidden" name="uid" th:value="${user.id}" />
-
+        <!-- Profile -->
+        <section class="card">
             <h2>Profile</h2>
+            <form th:action="@{/account/profile}" method="post">
+                <input type="hidden" name="uid" th:value="${user.id}" />
+                <label>Email</label>
+                <input name="email" type="email" th:value="${user.email}" required />
+                <div class="actions">
+                    <button type="submit">Save profile</button>
+                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                </div>
+            </form>
+        </section>
 
-            <label>Email</label>
-            <input name="email" type="email" placeholder="you@example.com" th:value="${user.email}" required />
-
-            <div class="actions">
-                <button type="submit">Save profile</button>
-                <button type="reset" class="ghost">Cancel</button>
-            </div>
-        </form>
-
-        <!-- Password -->
-        <form th:action="@{/account/password}" method="post" class="card">
-            <input type="hidden" name="uid" th:value="${user.id}" />
-
+        <!-- Security -->
+        <section class="card">
             <h2>Security</h2>
-            <label for="newPassword">New password</label>
-            <input id="newPassword" name="newPassword" type="password" placeholder="At least 8 characters" required />
+            <form th:action="@{/account/password}" method="post">
+                <input type="hidden" name="uid" th:value="${user.id}" />
+                <div class="row">
+                    <div>
+                        <label>New password</label>
+                        <input name="newPassword" type="password" placeholder="At least 8 characters" required />
+                    </div>
+                    <div>
+                        <label>Confirm new password</label>
+                        <input name="confirm" type="password" placeholder="Repeat new password" required />
+                    </div>
+                </div>
+                <div class="actions">
+                    <button type="submit">Change password</button>
+                    <span class="hint">For now, no hashing—security comes later.</span>
+                </div>
+            </form>
+        </section>
 
-            <label for="confirm">Confirm new password</label>
-            <input id="confirm" type="password" placeholder="Repeat new password" required
-                   oninput="this.setCustomValidity(this.value!==document.getElementById('newPassword').value?'Passwords do not match':'')" />
-
-            <div class="actions">
-                <button type="submit">Change password</button>
-                <button type="button" class="ghost">Forgot password?</button>
-            </div>
-        </form>
-
+        <!-- Danger zone -->
+        <section class="card danger">
+            <h2>Delete account</h2>
+            <p class="hint">This permanently removes your account and roles.</p>
+            <form th:action="@{/account/delete}" method="post"
+                  onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+                <input type="hidden" name="uid" th:value="${user.id}" />
+                <div class="actions">
+                    <button type="submit">Delete my account</button>
+                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                </div>
+            </form>
+        </section>
     </div>
 </main>
 </body>

@@ -26,6 +26,7 @@
     nav a{margin-right:8px;text-decoration:none;color:#111827}
     .msg{color:#065f46;margin:10px 0}
     .hint{font-size:12px;color:#64748b;margin-top:8px}
+    a.ghost{display:inline-block;text-decoration:none;padding:6px 10px;border-radius:10px}
   </style>
 </head>
 <body>
@@ -77,7 +78,9 @@
       <th style="width:70px;">ID</th>
       <th>Email</th>
       <th>Password (dev)</th>
-      <th style="width:120px;">Enabled</th>
+      <th style="width:140px;">Enabled</th>
+      <th style="width:100px;">Edit</th>
+      <th style="width:110px;">Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -86,8 +89,25 @@
       <td th:text="${u.email}">user@example.com</td>
       <td th:text="${u.password}">changeme</td>
       <td>
-          <span class="pill" th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'"
-                th:classappend="${u.enabled} ? ' ok' : ' no'">ENABLED</span>
+        <!-- Click the pill to toggle -->
+        <form th:action="@{/admin/users/{id}/toggle(id=${u.id})}" method="post" style="display:inline">
+          <button type="submit"
+                  class="pill"
+                  th:classappend="${u.enabled} ? ' ok' : ' no'"
+                  th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'"
+                  title="Click to toggle">
+            ENABLED
+          </button>
+        </form>
+      </td>
+      <td>
+        <a th:href="@{/admin/users/{id}/edit(id=${u.id})}" class="ghost">Edit</a>
+      </td>
+      <td>
+        <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" style="display:inline"
+              onsubmit="return confirm('Delete this user?');">
+          <button type="submit" class="ghost">Delete</button>
+        </form>
       </td>
     </tr>
     </tbody>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title th:text="${pageTitle} ?: 'Login'">Login</title>
   <style>
     body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
     header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0}
@@ -12,8 +12,18 @@
     label{display:block;font-size:14px;margin-top:12px}
     input{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
     button{margin-top:16px;width:100%;padding:10px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
-    nav a{margin-right:8px;text-decoration:none;color:#111827}
+    nav a{margin-left:12px;text-decoration:none;color:#111827}
     .hint{font-size:12px;color:#64748b;margin-top:6px}
+    .err{color:#b91c1c;margin-top:8px}
+    .ok{color:#065f46;margin-top:8px}
+
+    /* pretty toggle */
+    .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;margin-top:10px}
+    .toggle input{display:none}
+    .toggle .slider{width:38px;height:22px;background:#e5e7eb;border-radius:999px;position:relative;transition:.2s}
+    .toggle .slider::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,.15);transition:.2s}
+    .toggle input:checked + .slider{background:#111827}
+    .toggle input:checked + .slider::after{transform:translateX(16px)}
   </style>
 </head>
 <body>
@@ -34,7 +44,6 @@
     <h1 class="title">Sign in</h1>
 
     <form th:action="@{/login}" method="post" class="card">
-
       <h1 class="title">Sign in</h1>
 
       <label for="username">Email or Username</label>
@@ -43,31 +52,22 @@
       <label for="password" style="margin-top:8px;">Password</label>
       <input id="password" name="password" type="password" required autocomplete="current-password" />
 
-      <div class="row" style="margin-top:12px;">
-        <label style="display:flex;align-items:center;gap:6px;">
-          <input type="checkbox" name="remember-me" />
-          <span>Remember me</span>
-        </label>
-        <button type="submit" style="margin-left:auto;">Login</button>
-      </div>
+      <label class="toggle" title="Keep me signed in on this device">
+        <input type="checkbox" id="remember" name="remember">
+        <span class="slider"></span>
+        <span>Remember me</span>
+      </label>
 
-      <!-- Optional error message -->
-      <p th:if="${param.error}" style="color:#b91c1c; margin-top:8px;">Invalid username or password.</p>
-      <p th:if="${param.logout}" style="color:#065f46; margin-top:8px;">You’ve been logged out.</p>
+      <button type="submit">Login</button>
+
+      <!-- messages -->
+      <p th:if="${error}" class="err" th:text="${error}">Invalid email or password.</p>
+      <p th:if="${msg}" class="ok" th:text="${msg}">You’ve been signed out.</p>
     </form>
 
-    <!-- Viewer path -->
-    <div class="card" style="margin-top:12px; text-align:center;">
-      <a class="row" th:href="@{/read}">
-        <span>👀 Start reading without an account</span>
-      </a>
-    </div>
-
-
-    <div class="hint" style="text-align:center;margin:10px 0;">or</div>
-
+    <!-- One simple link (removed duplicate/emoji) -->
     <a th:href="@{/read}"
-       style="display:inline-block;text-align:center;width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;color:#111827;text-decoration:none;">
+       style="display:inline-block;text-align:center;width:100%;margin-top:10px;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;color:#111827;text-decoration:none;">
       Start reading without an account
     </a>
   </div>

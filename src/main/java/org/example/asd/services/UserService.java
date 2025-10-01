@@ -34,7 +34,6 @@ public class UserService {
         return users.save(u);
     }
 
-
     @Transactional
     public void changePassword(Long userId, String newPassword) {
         User u = getById(userId);
@@ -43,8 +42,10 @@ public class UserService {
         users.save(u);
     }
 
-    // ===== Admin ops (for next step) =====
-    public List<User> listAll() { return users.findAll(); }
+    // ===== Admin ops =====
+    public List<User> listAll() {
+        return users.findAll();
+    }
 
     @Transactional
     public User createUser(String email, String password, Collection<String> roleNames, boolean enabled) {
@@ -56,7 +57,6 @@ public class UserService {
         u.setRoles(resolveRoles(roleNames));
         return users.save(u);
     }
-
 
     @Transactional
     public User setEnabled(Long userId, boolean enabled) {
@@ -77,6 +77,16 @@ public class UserService {
         users.deleteById(userId);
     }
 
+    @Transactional
+    public boolean toggleEnabled(Long userId) {
+        User u = getById(userId);
+        boolean newVal = !u.isEnabled(); // <-- fixed
+        u.setEnabled(newVal);
+        users.save(u);
+        return newVal;
+    }
+
+    // ===== Helpers =====
     private Set<Role> resolveRoles(Collection<String> roleNames) {
         Set<Role> out = new HashSet<>();
         if (roleNames == null) return out;
@@ -91,6 +101,7 @@ public class UserService {
         }
         return out;
     }
+
     private String normalizeRole(String s) {
         if (s == null) return "ROLE_USER";
         String n = s.trim().toUpperCase(Locale.ROOT);
