@@ -3,8 +3,6 @@ package org.example.asd.config;
 import org.example.asd.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,33 +19,34 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // dev only
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/signup", "/articles",
                                 "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+
                 .formLogin(login -> login
                         .loginPage("/login").permitAll()
-                        .defaultSuccessUrl("/post-login", true)
+                        .loginProcessingUrl("/login")          // POST target from your form
+                        .usernameParameter("username")         // input name in your form
+                        .passwordParameter("password")         // input name in your form
+                        .defaultSuccessUrl("/post-login", true) // we set session + route there
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID", "remember_uid")
                 );
+
         return http.build();
     }
 
-    // Needed so we can authenticate the brand-new user right after sign-up
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    // DEV ONLY: plain text passwords for now
+    // DEV ONLY: plain text passwords (switch to BCrypt later)
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();

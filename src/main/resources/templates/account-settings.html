@@ -23,6 +23,7 @@
         .danger h2{color:#991b1b}
         .danger button{background:#991b1b}
         .hint{font-size:12px;color:#64748b;margin-top:6px}
+        .err{color:#991b1b;margin:10px 0}
     </style>
 </head>
 <body>
@@ -36,7 +37,6 @@
                     Sign out
                 </button>
             </form>
-
         </nav>
     </div>
 </header>
@@ -44,6 +44,7 @@
 <main class="wrap">
     <h1>Account Settings</h1>
     <p th:if="${msg}" class="msg" th:text="${msg}"></p>
+    <p th:if="${error}" class="err" th:text="${error}"></p>
 
     <div class="grid">
         <!-- Profile -->
@@ -55,7 +56,7 @@
                 <input name="email" type="email" th:value="${user.email}" required />
                 <div class="actions">
                     <button type="submit">Save profile</button>
-                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                    <a th:href="@{/account}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
                 </div>
             </form>
         </section>
@@ -91,7 +92,7 @@
                 <input type="hidden" name="uid" th:value="${user.id}" />
                 <div class="actions">
                     <button type="submit">Delete my account</button>
-                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                    <a th:href="@{/account}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
                 </div>
             </form>
         </section>

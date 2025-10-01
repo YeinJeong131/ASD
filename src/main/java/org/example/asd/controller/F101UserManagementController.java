@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class F101UserManagementController {
@@ -24,16 +25,23 @@ public class F101UserManagementController {
                               RedirectAttributes ra) {
         userService.updateProfile(uid, email);
         ra.addFlashAttribute("msg", "Profile updated");
-        return "redirect:/account?uid=" + uid;
+        return "redirect:/account";
     }
 
     @PostMapping("/account/password")
     public String changePassword(@RequestParam Long uid,
                                  @RequestParam String newPassword,
+                                 @RequestParam String confirm,
                                  RedirectAttributes ra) {
+
+        if (!Objects.equals(newPassword, confirm)) {
+            ra.addFlashAttribute("error", "Passwords do not match.");
+            return "redirect:/account";
+        }
+
         userService.changePassword(uid, newPassword);
         ra.addFlashAttribute("msg", "Password changed");
-        return "redirect:/account?uid=" + uid;
+        return "redirect:/account";
     }
 
     @PostMapping("/account/delete")

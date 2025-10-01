@@ -2,57 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title th:text="${pageTitle} ?: 'Create account'">Create account</title>
+  <title th:text="${pageTitle} ?: 'Create an account'">Create an account</title>
   <style>
     body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
     header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
-    header nav{display:none !important;} /* hide top-right nav just on signup */
-    .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+    .wrap{max-width:560px;margin:24px auto;padding:0 16px}
     .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-    h1{margin:4px 0 12px 4px}
-    label{display:block;font-size:14px;margin:10px 0 6px 0}
-    input[type="email"],input[type="password"]{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px}
-    button{width:100%;padding:12px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
-    a.btn{display:block;text-align:center;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;color:#111827;text-decoration:none}
-    .msg{margin:8px 4px;padding:8px 10px;border-radius:8px}
-    .error{color:#991b1b;background:#fef2f2;border:1px solid #fecaca}
+    h1{margin:0 0 12px 0}
+    label{display:block;font-size:14px;margin-top:10px}
+    input{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
+    .actions{margin-top:12px;display:flex;gap:8px}
+    button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
+    .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
+    .msg{margin:10px 0;color:#991b1b}
+    nav a{margin-right:8px;text-decoration:none;color:#111827}
   </style>
 </head>
 <body>
 <header>
-  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between">
+  <div class="wrap">
     <strong>Betterpedia</strong>
-    <nav>
-      <a th:href="@{/login}">Login</a>
-      <a th:href="@{/account}">Account</a>
-      <a th:href="@{/admin}">Admin</a>
+    <nav style="float:right">
+      <a th:href="@{/login}">Back to login</a>
     </nav>
   </div>
 </header>
 
-<main class="wrap" style="max-width:520px">
-  <div class="card">
-    <h1>Create account</h1>
+<main class="wrap">
+  <h1>Create an account</h1>
+  <p th:if="${error}" class="msg" th:text="${error}"></p>
 
-    <p th:if="${error}" th:text="${error}" class="msg error"></p>
+  <form th:action="@{/signup}" method="post" class="card">
+    <label>Email</label>
+    <input name="email" type="email" placeholder="you@example.com" required />
 
-    <form th:action="@{/signup}" method="post">
-      <label>Email</label>
-      <input type="email" name="email" placeholder="you@example.com" required />
+    <label>Password</label>
+    <input name="password" type="password" placeholder="••••••••" required />
 
-      <label style="margin-top:12px">Password</label>
-      <input type="password" name="password" placeholder="At least 8 characters" required />
+    <label>Confirm password</label>
+    <input name="confirm" type="password" placeholder="Repeat password" required />
 
-      <label style="margin-top:12px">Confirm password</label>
-      <input type="password" name="confirm" placeholder="Repeat password" required />
-
-      <button type="submit" style="margin-top:16px">Create account</button>
-    </form>
-
-    <div style="margin-top:12px">
-      <a th:href="@{/login}" class="btn">Back to login</a>
+    <div class="actions">
+      <button type="submit">Create account</button>
+      <a th:href="@{/login}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
     </div>
-  </div>
+  </form>
 </main>
 </body>
 </html>
