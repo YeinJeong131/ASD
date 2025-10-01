@@ -7,8 +7,8 @@
 
 **Branch:** `appearance-note-feature`  
 **Developer:** Yein Jeong  
-**Student ID:** [Your Student ID]  
-**Features:** 
+**Student ID:** 14650170 
+**Features:**  
 - Feature 5: Enhance User Experience (Appearance Customization)
 - Feature 6: Highlight & Note System (My Notes Page)
 
@@ -20,12 +20,9 @@
 3. [Feature 1: Appearance Settings](#feature-1-appearance-settings)
 4. [Feature 2: Highlight & Notes](#feature-2-highlight--notes)
 5. [Integration Points](#integration-points)
-6. [Database Schema](#database-schema)
-7. [API Documentation](#api-documentation)
 8. [How to Run](#htr)
 9. [Testing](#testing)
-10. [Assignment Requirements Checklist](#assignment-requirements-checklist)
-
+10. [Database Schema](#database-schema)
 ---
 
 <h2 id="fo">Feature Overview</h2> 
@@ -56,7 +53,7 @@ Users can highlight specific sentences on wiki pages and add personal notes. All
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ### Backend (Java)
 ```
@@ -137,7 +134,7 @@ src/test/java/betterpedia/
 
 ---
 
-## 🎨 Feature 1: Appearance Settings
+## Feature 1: Appearance Settings
 
 ### Backend Components
 
@@ -244,7 +241,7 @@ Applies saved settings globally across all pages:
 
 ---
 
-## 📝 Feature 2: Highlight & Notes
+## Feature 2: Highlight & Notes
 
 ### Backend Components
 
@@ -363,7 +360,7 @@ window.YeinHighlightSystem.getStats()
 
 ---
 
-## 🔗 Integration Points
+## Integration Points
 
 ### Integration with User Management Feature (Esha)
 - **User Session:** Uses `session.userId` and `session.username` from Esha's authentication
@@ -403,140 +400,58 @@ session.setAttribute("username", "TestUser");
 - Java 17+
 - Gradle
 - Spring Boot 3.x
-- H2/PostgreSQL Database
+- MySQL Database
 
-### Setup Steps
-
-1. **Clone the repository and checkout branch:**
+### Steps
+1. **Clone and checkout:**
 ```bash
 git checkout appearance-note-feature
 ```
-
-2. **Configure database** (in `application.properties`):
-```properties
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.jpa.hibernate.ddl-auto=update
+2. Setup MySQL database:
+```bash
+CREATE DATABASE betterpedia;
+CREATE USER 'wiki'@'localhost' IDENTIFIED BY 'wiki';
+GRANT ALL PRIVILEGES ON betterpedia.* TO 'wiki'@'localhost';
+FLUSH PRIVILEGES;
 ```
+3. Configure database (src/main/resources/application.properties):
+```bash
+# MySQL Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/betterpedia?useSSL=false&serverTimezone=Australia/Sydney&allowPublicKeyRetrieval=true
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.username=wiki
+spring.datasource.password=wiki
 
-3. **Build and run:**
+# JPA/Hibernate Configuration
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+```
+4. Build and run:
 ```bash
 ./gradlew bootRun
 ```
+5. Access the application:
+***before testing this code user login need***
+- Settings: http://localhost:8080/settings
+- My Notes: http://localhost:8080/my-notes
+- Wiki Home: http://localhost:8080/wiki
+- Wiki Document: http://localhost:8080/wiki/spring-framework
 
-4. **Access the application:**
-- Settings Page: `http://localhost:8080/settings`
-- My Notes Page: `http://localhost:8080/my-notes`
-- Wiki Home: `http://localhost:8080/wiki`
-- Wiki Document: `http://localhost:8080/wiki/spring-framework`
-
-### Test Login
-For testing purposes, visit: `http://localhost:8080/test-login`
-This creates a mock session with userId=1.
-
----
-
-## 🧪 Testing
-
-### Automated Tests
-
-Located in `src/test/java/betterpedia/`:
-
-#### Appearance Settings Tests
-**UserSettingsControllerTest:**
-- Test GET settings endpoint
-- Test POST settings with valid data
-- Test validation errors
-
-**UserSettingsServiceTest:**
-- Test settings retrieval
-- Test default settings creation
-- Test validation rules
-- Test settings update logic
-
-#### Notes & Highlights Tests
-**NoteControllerTest:**
-- Test create note endpoint
-- Test get notes by user
-- Test get notes by page
-- Test update note
-- Test delete note
-
-**NoteServiceTest:**
-- Test note creation
-- Test note retrieval
-- Test note updates
-- Test note deletion
-
-### Manual Testing Checklist
-
-#### Appearance Settings:
-- [ ] Change dark mode and verify theme switches
-- [ ] Change font size and verify text scales
-- [ ] Change font style and verify font family changes
-- [ ] Change line spacing and verify spacing adjusts
-- [ ] Change page width and verify layout changes
-- [ ] Change date format and verify preview updates
-- [ ] Save settings and reload page - settings persist
-- [ ] Reset to defaults works correctly
-
-#### Highlight & Notes:
-- [ ] Select text on wiki page - tooltip appears
-- [ ] Create yellow highlight - text is highlighted
-- [ ] Create blue, green highlights - colors work
-- [ ] Add note with highlight - note saves
-- [ ] Click existing highlight - edit tooltip appears
-- [ ] Edit note content - changes save
-- [ ] Change highlight color - color updates
-- [ ] Delete note - note removed
-- [ ] Navigate to My Notes page - all notes displayed
-- [ ] Toggle between "All Notes" and "By Page" views
-- [ ] Click page link - returns to original wiki page
-
-### API Testing Examples
-
-**Test Settings API:**
+## Testing
+### Run Tests
 ```bash
-# Get user settings
-curl http://localhost:8080/api/settings/1
-
-# Save settings
-curl -X POST http://localhost:8080/api/settings \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": 1,
-    "darkMode": true,
-    "fontSize": "large",
-    "fontStyle": "serif",
-    "lineSpacing": "relaxed",
-    "pageWidth": "wide",
-    "dateFormat": "YYYY-MM-DD",
-    "timeOffset": 9
-  }'
+./gradlew test
 ```
+### Test Coverage
+- UserSettingsControllerTest - API endpoints
+- UserSettingsServiceTest - Business logic
+- NoteControllerTest - API endpoints
+- NoteServiceTest - Business logic
 
-**Test Notes API:**
-```bash
-# Create note
-curl -X POST http://localhost:8080/api/notes \
-  -F "pageUrl=/wiki/spring-framework" \
-  -F "highlightedText=Spring Framework is awesome" \
-  -F "noteContent=Remember this for exam" \
-  -F "highlightColor=yellow"
 
-# Get all notes
-curl http://localhost:8080/api/notes
-
-# Get notes for specific page
-curl "http://localhost:8080/api/notes/page?url=/wiki/spring-framework"
-
-# Delete note
-curl -X DELETE http://localhost:8080/api/notes/1
-```
-
----
-
-## 📊 Database Schema
-
+## Database Schema
 ### user_settings Table
 ```sql
 CREATE TABLE user_settings (
@@ -551,7 +466,6 @@ CREATE TABLE user_settings (
     line_spacing VARCHAR(20) DEFAULT 'normal'
 );
 ```
-
 ### notes Table
 ```sql
 CREATE TABLE notes (
@@ -569,41 +483,8 @@ CREATE TABLE notes (
 
 ---
 
-## 🎯 Features Delivered
 
-### ✅ Assignment Requirements Met:
-
-1. **Software Requirements (2 Marks)**
-   - User stories documented for appearance settings
-   - User stories documented for highlight & notes
-   - Requirements backlog maintained
-
-2. **Solution Architecture (2 Marks)**
-   - MVC pattern implemented
-   - Service layer for business logic
-   - Repository layer for data access
-   - RESTful API design
-
-3. **Solution Design (2 Marks)**
-   - User journey maps created
-   - Database design with relationships
-   - Component interaction design
-
-4. **Working Software Demo (10 Marks)**
-   - ✅ Demo meets all feature requirements
-   - ✅ Clear and consistent UI/UX
-   - ✅ Input validation and error handling
-   - ✅ Reusable code (services, APIs, components)
-   - ✅ Clean, commented, consistent code style
-
-5. **Automated Testing (4 Marks)**
-   - Unit tests for services
-   - Controller tests for APIs
-   - Test coverage for core functionality
-
----
-
-## 👤 Developer Information
+## Developer Information
 
 **Name:** Yein Jeong  
 **Features:** 
@@ -615,9 +496,7 @@ CREATE TABLE notes (
 
 ---
 
-## 📝 Notes
-
-- Current implementation uses mock user session (userId=1)
+## Notes
 - Will integrate with Esha's authentication system for final release
 - Highlight restoration on original pages is partially implemented
-- Future enhancement: Export notes to PDF/Word format
+- need to be integrated with other group member's code
