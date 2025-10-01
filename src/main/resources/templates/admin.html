@@ -24,18 +24,21 @@
     .ok{background:#ecfdf5;color:#065f46}
     .no{background:#fef2f2;color:#991b1b}
     nav a{margin-right:8px;text-decoration:none;color:#111827}
+    nav form{display:inline}
+    nav button{padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#111827;cursor:pointer}
     .msg{color:#065f46;margin:10px 0}
     .hint{font-size:12px;color:#64748b;margin-top:8px}
-    a.ghost{display:inline-block;text-decoration:none;padding:6px 10px;border-radius:10px}
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <strong>Betterpedia</strong>
-    <nav style="float:right">
-      <a th:href="@{/login}">Login</a>
+    <nav style="float:right; display:flex; gap:8px; align-items:center">
       <a th:href="@{/admin}">Admin</a>
+      <form th:action="@{/logout}" method="post">
+        <button type="submit">Sign out</button>
+      </form>
     </nav>
   </div>
 </header>
@@ -78,9 +81,8 @@
       <th style="width:70px;">ID</th>
       <th>Email</th>
       <th>Password (dev)</th>
-      <th style="width:140px;">Enabled</th>
-      <th style="width:100px;">Edit</th>
-      <th style="width:110px;">Delete</th>
+      <th style="width:120px;">Enabled</th>
+      <th style="width:220px;">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -89,21 +91,13 @@
       <td th:text="${u.email}">user@example.com</td>
       <td th:text="${u.password}">changeme</td>
       <td>
-        <!-- Click the pill to toggle -->
         <form th:action="@{/admin/users/{id}/toggle(id=${u.id})}" method="post" style="display:inline">
-          <button type="submit"
-                  class="pill"
-                  th:classappend="${u.enabled} ? ' ok' : ' no'"
-                  th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'"
-                  title="Click to toggle">
-            ENABLED
-          </button>
+          <button type="submit" class="ghost"
+                  th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'">ENABLED</button>
         </form>
       </td>
       <td>
-        <a th:href="@{/admin/users/{id}/edit(id=${u.id})}" class="ghost">Edit</a>
-      </td>
-      <td>
+        <a class="ghost" th:href="@{/admin/users/{id}/edit(id=${u.id})}" style="text-decoration:none;">Edit</a>
         <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" style="display:inline"
               onsubmit="return confirm('Delete this user?');">
           <button type="submit" class="ghost">Delete</button>

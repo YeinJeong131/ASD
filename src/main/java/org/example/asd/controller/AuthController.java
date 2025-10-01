@@ -1,31 +1,48 @@
 package org.example.asd.controller;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import org.example.asd.model.User;
 import org.example.asd.repository.UserRepository;
 import org.example.asd.services.UserService;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class AuthController {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final AuthenticationManager authManager;
 
-    public AuthController(UserRepository userRepository, UserService userService) {
+    public AuthController(UserRepository userRepository,
+                          UserService userService,
+                          AuthenticationManager authManager) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.authManager = authManager;
     }
 
-    // ===== Login =====
+    // ----- Home -----
+    @GetMapping("/")
+    public String home() { return "redirect:/login"; }
+
+    // ----- Login (Spring Security handles POST /login) -----
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
@@ -36,80 +53,23 @@ public class AuthController {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String doLogin(@RequestParam String username,
-                          @RequestParam String password,
-                          @RequestParam(value = "remember", required = false) String remember,
-                          HttpSession session,
-                          HttpServletResponse response,
-                          RedirectAttributes ra) {
+    // ----- Post-login landing (used by SecurityConfig.defaultSuccessUrl) -----
+    @GetMapping("/post-login")
+    public String postLogin(HttpSession session) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
 
-        User u = userRepository.findByEmail(username).orElse(null);
-        boolean ok = u != null && Objects.equals(u.getPassword(), password) && u.isEnabled();
-
-        if (!ok) {
-            ra.addAttribute("error", "1");
-            return "redirect:/login";
+        if (auth != null && auth.getName() != null) {
+            userRepository.findByEmail(auth.getName()).ifPresent(u -> {
+                session.setAttribute("uid", u.getId());
+                session.setAttribute("email", u.getEmail());
+            });
         }
-
-        session.setAttribute("uid", u.getId());
-        session.setAttribute("email", u.getEmail());
-
-        if (remember != null) {
-            Cookie c = new Cookie("remember_uid", u.getId().toString());
-            c.setPath("/");
-            c.setMaxAge(60 * 60 * 24 * 14);
-            response.addCookie(c);
-        }
-
-        // If the user has ROLE_ADMIN, send to admin; otherwise to articles
-        boolean isAdmin = u.getRoles().stream().anyMatch(r -> "ROLE_ADMIN".equals(r.getName()));
         return "redirect:" + (isAdmin ? "/admin" : "/articles");
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpSession session, HttpServletResponse response, RedirectAttributes ra) {
-        session.invalidate();
-        Cookie c = new Cookie("remember_uid", "");
-        c.setPath("/");
-        c.setMaxAge(0);
-        response.addCookie(c);
-        ra.addAttribute("logout", "1");
-        return "redirect:/login";
-    }
-
-    // ===== Signup =====
-    @GetMapping("/signup")
-    public String signupPage(Model model) {
-        model.addAttribute("pageTitle", "Create account");
-        return "signup";
-    }
-
-    @PostMapping("/signup")
-    public String handleSignup(@RequestParam String email,
-                               @RequestParam String password,
-                               @RequestParam String confirm,
-                               HttpSession session,
-                               RedirectAttributes ra) {
-        if (!Objects.equals(password, confirm)) {
-            ra.addFlashAttribute("error", "Passwords do not match.");
-            return "redirect:/signup";
-        }
-
-        try {
-            // Create enabled USER
-            User u = userService.createUser(email, password, List.of("ROLE_USER"), true);
-            // Auto-login (dev-style)
-            session.setAttribute("uid", u.getId());
-            session.setAttribute("email", u.getEmail());
-            return "redirect:/articles";
-        } catch (IllegalArgumentException e) {
-            ra.addFlashAttribute("error", e.getMessage() != null ? e.getMessage() : "Could not create user.");
-            return "redirect:/signup";
-        }
-    }
-
-    // ===== Simple pages =====
+    // ----- Articles -----
     @GetMapping("/articles")
     public String articles(Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Articles");
@@ -118,9 +78,70 @@ public class AuthController {
         return "articles";
     }
 
+    // ----- Account (requires session.uid) -----
     @GetMapping("/account")
-    public String accountPage(Model model) {
+    public String accountPage(Model model, HttpSession session, RedirectAttributes ra) {
+        Object uidObj = session.getAttribute("uid");
+        if (uidObj == null) {
+            ra.addFlashAttribute("error", "Please sign in to access your account.");
+            return "redirect:/login";
+        }
+        Long uid = (uidObj instanceof Long) ? (Long) uidObj : Long.valueOf(uidObj.toString());
+        User u = userRepository.findById(uid).orElse(null);
+        if (u == null) {
+            try { session.invalidate(); } catch (Exception ignored) {}
+            ra.addFlashAttribute("error", "Session expired. Please sign in again.");
+            return "redirect:/login";
+        }
         model.addAttribute("pageTitle", "Account Settings");
+        model.addAttribute("user", u);
         return "account-settings";
     }
+
+    // ----- Sign up -----
+    @GetMapping("/signup")
+    public String signupPage(@RequestParam(value = "error", required = false) String error,
+                             Model model) {
+        model.addAttribute("pageTitle", "Create an account");
+        if (error != null) {
+            model.addAttribute("error", "That email is already in use.");
+        }
+        return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String doSignup(@RequestParam String email,
+                           @RequestParam String password,
+                           HttpServletRequest request,
+                           RedirectAttributes ra) {
+        try {
+            // 1) Create enabled ROLE_USER
+            User created = userService.createUser(email, password, List.of("ROLE_USER"), true);
+
+            // 2) Authenticate with Spring Security
+            Authentication auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(created.getEmail(), password)
+            );
+
+            // 3) Persist security context to session (prevents losing it on redirect)
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(auth);
+            SecurityContextHolder.setContext(context);
+            request.getSession(true)
+                    .setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
+            // 4) Put light-weight info for your Thymeleaf navbar
+            HttpSession session = request.getSession();
+            session.setAttribute("uid", created.getId());
+            session.setAttribute("email", created.getEmail());
+
+            // 5) Go to articles (Account button will now show)
+            return "redirect:/articles";
+        } catch (IllegalArgumentException dup) {
+            ra.addAttribute("error", "1");
+            return "redirect:/signup";
+        }
+    }
+
+    // We use Spring Security’s POST /logout. No controller method needed.
 }

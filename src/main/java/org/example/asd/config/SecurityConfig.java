@@ -3,8 +3,10 @@ package org.example.asd.config;
 import org.example.asd.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,40 +21,38 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // dev only
                 .csrf(csrf -> csrf.disable())
-
-                // allow public pages (including /signup and /articles)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/", "/login", "/signup", "/articles",
-                                "/error", "/favicon.ico",
-                                "/css/**", "/js/**", "/images/**"
-                        ).permitAll()
+                        .requestMatchers("/", "/login", "/signup", "/articles",
+                                "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // everything else may need login later; keep open for now
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
-
-                // we are handling login in AuthController, not Spring Security's formLogin
-                .formLogin(form -> form.disable())
-
-                // allow our /logout endpoint to redirect back to /login
+                .formLogin(login -> login
+                        .loginPage("/login").permitAll()
+                        .defaultSuccessUrl("/post-login", true)
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "remember_uid")
                 );
-
         return http.build();
     }
 
-    // DEV ONLY: plain-text passwords (you already store cleartext). Replace with BCrypt later.
+    // Needed so we can authenticate the brand-new user right after sign-up
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    // DEV ONLY: plain text passwords for now
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    // Kept so ROLE checks (like /admin/**) can work if you later switch to Security auth
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepo) {
         return username -> userRepo.findByEmail(username)

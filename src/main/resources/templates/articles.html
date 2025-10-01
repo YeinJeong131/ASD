@@ -1,22 +1,49 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title th:text="${pageTitle} ?: 'Articles'">Articles</title>
     <style>
         body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
-        .wrap{max-width:900px;margin:40px auto;padding:0 16px}
-        .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+        header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
+        .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+        h1{margin:0 0 12px 0}
+        nav{float:right; display:flex; gap:8px; align-items:center}
+        nav a, nav button{padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#111827;text-decoration:none;cursor:pointer}
+        nav a.primary{background:#111827;color:#fff;border-color:#111827}
+        nav form{display:inline}
+        .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+        .muted{color:#64748b}
     </style>
 </head>
 <body>
+<header>
+    <div class="wrap">
+        <strong>Betterpedia</strong>
+
+        <!-- Right-side actions driven by session.uid -->
+        <nav>
+            <!-- Guest (no session.uid) sees Sign up -->
+            <a th:if="${session.uid == null}" class="primary" th:href="@{/signup}">Sign up</a>
+
+            <!-- Logged-in user (has session.uid) sees Account + Sign out -->
+            <a th:if="${session.uid != null}" th:href="@{/account}">Account</a>
+            <form th:if="${session.uid != null}" th:action="@{/logout}" method="post">
+                <button type="submit">Sign out</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
 <main class="wrap">
+    <h1>Articles</h1>
+
     <div class="card">
-        <h1>Articles</h1>
-        <p>This is a placeholder page.</p>
-        <form action="/logout" method="post" style="margin-top:10px">
-            <button>Sign out</button>
-        </form>
+        <p class="muted">
+            Placeholder page. If you’re logged in you should see <strong>Account</strong> above.
+            Guests should see a <strong>Sign up</strong> button.
+        </p>
+        <!-- your article list/content goes here -->
     </div>
 </main>
 </body>

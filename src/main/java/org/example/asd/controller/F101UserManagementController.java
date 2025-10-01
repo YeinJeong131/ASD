@@ -17,9 +17,6 @@ public class F101UserManagementController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public String home() { return "redirect:/login"; }
-
     // ----- Account (POST only) -----
     @PostMapping("/account/profile")
     public String saveProfile(@RequestParam Long uid,
@@ -97,5 +94,4 @@ public class F101UserManagementController {
         ra.addFlashAttribute("msg", "User deleted");
         return "redirect:/admin";
     }
-
 }
