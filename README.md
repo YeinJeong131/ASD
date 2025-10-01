@@ -29,7 +29,7 @@
 
 This branch implements two main features:
 
-### Feature 1: Appearance Settings
+### Appearance Settings
 Users can customize the appearance of Betterpedia through a dedicated settings page. When logged in, preferences are stored and automatically applied on future visits.
 
 **Available Options:**
@@ -41,7 +41,7 @@ Users can customize the appearance of Betterpedia through a dedicated settings p
 - Date format (DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD)
 - Time offset (UTC -12 to +14)
 
-### Feature 2: Highlight & Notes
+### Highlight & Notes
 Users can highlight specific sentences on wiki pages and add personal notes. All highlights and notes are saved to a personal "My Notes" page with quick access links to original pages.
 
 **Available Options:**
