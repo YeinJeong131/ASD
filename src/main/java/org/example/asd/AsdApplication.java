@@ -1,5 +1,9 @@
 // http://localhost:8080
+
 // http://localhost:8080/discussion
+// http://localhost:8080/discussion/1
+// Discussion page have article ID.
+
 // http://localhost:8080/badges
 
 package org.example.asd;
