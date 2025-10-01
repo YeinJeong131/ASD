@@ -46,7 +46,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // DEV ONLY: plain text passwords (switch to BCrypt later)
+    // plain text passwords
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();

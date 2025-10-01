@@ -31,8 +31,7 @@ public class AuthController {
         this.userRepository = userRepository;
         this.userService = userService;
     }
-
-    // ----- Login (GET only: Spring Security handles POST /login) -----
+//Login
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
@@ -43,8 +42,7 @@ public class AuthController {
         return "login";
     }
 
-    // After Spring Security authenticates successfully, we land here.
-    // We set your session (for the Articles header) and route by role.
+  //After login
     @GetMapping("/post-login")
     public String postLogin(Authentication auth, HttpSession session) {
         if (auth != null && auth.isAuthenticated()) {
@@ -60,7 +58,7 @@ public class AuthController {
         return "redirect:/login?error";
     }
 
-    // ----- Articles -----
+    // Temporary articles page
     @GetMapping("/articles")
     public String articles(Model model, HttpSession session) {
         model.addAttribute("pageTitle", "Articles");
@@ -69,7 +67,7 @@ public class AuthController {
         return "articles";
     }
 
-    // ----- Account (guard: if session missing but user is authenticated, rebuild it) -----
+    //Account
     @GetMapping("/account")
     public String accountPage(Model model, HttpSession session, Authentication auth, RedirectAttributes ra) {
         Object uidObj = session.getAttribute("uid");
@@ -110,7 +108,7 @@ public class AuthController {
         return "account-settings";
     }
 
-    // ----- Sign up (with password confirm + programmatic login) -----
+    // Sign up
     @GetMapping("/signup")
     public String signupPage(@RequestParam(value = "error", required = false) String error,
                              @RequestParam(value = "mismatch", required = false) String mismatch,
@@ -140,7 +138,6 @@ public class AuthController {
         try {
             User created = userService.createUser(email, password, List.of("ROLE_USER"), true);
 
-            // Programmatically authenticate the new user
             var authorities = created.getRoles().stream()
                     .map(r -> new SimpleGrantedAuthority(r.getName()))
                     .toList();
@@ -149,11 +146,9 @@ public class AuthController {
             SecurityContextHolder.setContext(context);
             session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
-            // Keep your simple header logic, too
             session.setAttribute("uid", created.getId());
             session.setAttribute("email", created.getEmail());
 
-            // Optional: a benign cookie you used earlier
             Cookie c = new Cookie("remember_uid", created.getId().toString());
             c.setPath("/");
             c.setMaxAge(60 * 60 * 24 * 14);

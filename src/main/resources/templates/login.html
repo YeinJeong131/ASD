@@ -6,7 +6,6 @@
   <style>
     body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
     header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
-    /* Hide the top-right nav ONLY on login page */
     header nav{display:none !important;}
     .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
     .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
@@ -49,7 +48,7 @@
     <p th:if="${error}" class="msg error" th:text="${error}">Invalid email or password.</p>
     <p th:if="${msg}" class="msg ok" th:text="${msg}"></p>
 
-    <!-- LOGIN FORM -->
+    <!-- login form -->
     <form method="post" action="/login" style="margin-top:4px">
       <label>Email or Username</label>
       <input name="username" type="text" required />
@@ -65,12 +64,10 @@
       <button type="submit" class="btn">Login</button>
     </form>
 
-    <!-- OR + SIGN UP LINK (OUTSIDE THE FORM) -->
     <div class="or">
       <hr><span style="font-size:12px;color:#64748b">or</span><hr>
     </div>
 
-    <!-- IMPORTANT: plain href so navigation always happens -->
     <a href="/signup" class="btn-ghost">Create an account</a>
 
     <div class="or">

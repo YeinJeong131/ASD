@@ -18,7 +18,7 @@ public class F101UserManagementController {
         this.userService = userService;
     }
 
-    // ----- Account (POST only) -----
+    //Account
     @PostMapping("/account/profile")
     public String saveProfile(@RequestParam Long uid,
                               @RequestParam String email,
@@ -51,7 +51,7 @@ public class F101UserManagementController {
         return "redirect:/login";
     }
 
-    // ----- Admin -----
+    //  Admin
     @GetMapping("/admin")
     public String adminPage(Model model) {
         model.addAttribute("pageTitle", "Admin");

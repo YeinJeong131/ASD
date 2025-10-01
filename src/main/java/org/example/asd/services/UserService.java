@@ -23,7 +23,6 @@ public class UserService {
         return users.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    // ===== Account (self-service) =====
     @Transactional
     public User updateProfile(Long userId, String email) {
         User u = getById(userId);
@@ -42,7 +41,6 @@ public class UserService {
         users.save(u);
     }
 
-    // ===== Admin ops =====
     public List<User> listAll() {
         return users.findAll();
     }
@@ -86,7 +84,6 @@ public class UserService {
         return newVal;
     }
 
-    // ===== Helpers =====
     private Set<Role> resolveRoles(Collection<String> roleNames) {
         Set<Role> out = new HashSet<>();
         if (roleNames == null) return out;

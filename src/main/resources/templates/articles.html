@@ -21,12 +21,9 @@
     <div class="wrap">
         <strong>Betterpedia</strong>
 
-        <!-- Right-side actions driven by session.uid -->
         <nav>
-            <!-- Guest (no session.uid) sees Sign up -->
             <a th:if="${session.uid == null}" class="primary" th:href="@{/signup}">Sign up</a>
 
-            <!-- Logged-in user (has session.uid) sees Account + Sign out -->
             <a th:if="${session.uid != null}" th:href="@{/account}">Account</a>
             <form th:if="${session.uid != null}" th:action="@{/logout}" method="post">
                 <button type="submit">Sign out</button>
@@ -43,7 +40,6 @@
             Placeholder page. If you’re logged in you should see <strong>Account</strong> above.
             Guests should see a <strong>Sign up</strong> button.
         </p>
-        <!-- your article list/content goes here -->
     </div>
 </main>
 </body>

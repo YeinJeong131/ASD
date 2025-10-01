@@ -4,40 +4,54 @@
   <meta charset="UTF-8" />
   <title th:text="${pageTitle} ?: 'Admin'">Admin</title>
   <style>
-    body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
-    header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
+    :root{
+      --bg:#f6f8fb;--ink:#0f172a;--muted:#64748b;--card:#fff;--line:#e5e7eb;
+      --ok-bg:#ecfdf5;--ok-ink:#065f46;--no-bg:#fef2f2;--no-ink:#991b1b;
+      --btn:#111827;--btn-ink:#fff;--btn-hover:#0b1222
+    }
+    *{box-sizing:border-box}
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:var(--bg);color:var(--ink)}
+    header{padding:16px 20px;background:#fff;border-bottom:1px solid var(--line)}
     .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
     h1{margin:0 0 12px 0}
-    form.card, .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:16px}
     label{display:block;font-size:14px;margin-top:10px}
-    input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
+    input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;margin-top:6px;border:1px solid var(--line);border-radius:10px}
     .row{display:flex;gap:10px;flex-wrap:wrap}
     .row > *{flex:1}
-    .actions{margin-top:12px;display:flex;gap:8px}
-    button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
-    .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
-    table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+     /*Buttons */
+    .btn{padding:10px 14px;border:1px solid var(--btn);border-radius:10px;background:var(--btn);color:var(--btn-ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{background:var(--btn-hover);border-color:var(--btn-hover)}
+    .btn-ghost{background:#fff;color:#111827;border:1px solid var(--line)}
+    .btn-ghost:hover{border-color:#cbd5e1}
+    .btn-danger{background:#991b1b;border-color:#991b1b}
+    .btn-danger:hover{background:#7f1616;border-color:#7f1616}
+    .btn-sm{padding:8px 12px;border-radius:10px}
+    /* Table */
+    table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
     th,td{padding:12px 14px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:14px}
     th{background:#f8fafc;font-weight:600;color:#334155}
     tr:last-child td{border-bottom:0}
-    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
-    .ok{background:#ecfdf5;color:#065f46}
-    .no{background:#fef2f2;color:#991b1b}
-    nav a{margin-right:8px;text-decoration:none;color:#111827}
+    /* Status */
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid transparent;cursor:pointer;user-select:none;transition:transform .05s ease}
+    .pill.ok{background:var(--ok-bg);color:var(--ok-ink);border-color:#bbf7d0}
+    .pill.no{background:var(--no-bg);color:var(--no-ink);border-color:#fecaca}
+    .pill:active{transform:scale(.98)}
+    .pill .dot{width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.7}
+    /* Header */
+    nav{float:right;display:flex;gap:8px;align-items:center}
     nav form{display:inline}
-    nav button{padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#111827;cursor:pointer}
-    .msg{color:#065f46;margin:10px 0}
-    .hint{font-size:12px;color:#64748b;margin-top:8px}
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <strong>Betterpedia</strong>
-    <nav style="float:right; display:flex; gap:8px; align-items:center">
-      <a th:href="@{/admin}">Admin</a>
+    <nav>
+      <!-- Admin page -->
       <form th:action="@{/logout}" method="post">
-        <button type="submit">Sign out</button>
+        <button class="btn btn-ghost btn-sm" type="submit">Sign out</button>
       </form>
     </nav>
   </div>
@@ -46,7 +60,7 @@
 <main class="wrap">
   <h1>Admin · Users</h1>
 
-  <p th:if="${msg}" class="msg" th:text="${msg}"></p>
+  <p th:if="${msg}" class="msg" th:text="${msg}" style="color:#065f46;margin:10px 0"></p>
 
   <!-- Create user -->
   <form th:action="@{/admin/users}" method="post" class="card">
@@ -60,7 +74,7 @@
         <label>Password</label>
         <input name="password" type="password" placeholder="changeme" required />
       </div>
-      <div style="flex:0 0 160px;align-self:flex-end;">
+      <div style="flex:0 0 170px;align-self:flex-end;">
         <label style="display:flex;align-items:center;gap:8px;margin-top:0;">
           <input type="checkbox" name="enabled" />
           <span>Enabled</span>
@@ -68,39 +82,49 @@
       </div>
     </div>
     <div class="actions">
-      <button type="submit">Create</button>
-      <button type="reset" class="ghost">Clear</button>
+      <button type="submit" class="btn">Create</button>
+      <button type="reset" class="btn btn-ghost">Clear</button>
     </div>
-    <p class="hint">Default role: <code>ROLE_USER</code>. Security & hashing come later.</p>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">Default role: <code>ROLE_USER</code>. Security &amp; hashing come later.</p>
   </form>
 
-  <!-- Users table -->
+  <!-- Users  -->
   <table class="card" th:if="${!#lists.isEmpty(users)}">
     <thead>
     <tr>
       <th style="width:70px;">ID</th>
       <th>Email</th>
       <th>Password (dev)</th>
-      <th style="width:120px;">Enabled</th>
-      <th style="width:220px;">Actions</th>
+      <th style="width:160px;">Enabled</th>
+      <th style="width:160px;">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="u : ${users}">
+    <tr th:each="u : ${users}" th:attr="data-id=${u.id}">
       <td th:text="${u.id}">1</td>
       <td th:text="${u.email}">user@example.com</td>
       <td th:text="${u.password}">changeme</td>
       <td>
-        <form th:action="@{/admin/users/{id}/toggle(id=${u.id})}" method="post" style="display:inline">
-          <button type="submit" class="ghost"
-                  th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'">ENABLED</button>
-        </form>
+        <span class="pill"
+              th:classappend="${u.enabled} ? ' ok' : ' no'"
+              th:attr="data-id=${u.id}, data-enabled=${u.enabled}"
+              title="Click to toggle">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="label" th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'">ENABLED</span>
+          </span>
       </td>
       <td>
-        <a class="ghost" th:href="@{/admin/users/{id}/edit(id=${u.id})}" style="text-decoration:none;">Edit</a>
+        <a th:href="@{/admin/users/{id}/edit(id=${u.id})}"
+           class="btn btn-ghost btn-sm" title="Edit user">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:4px">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+          </svg>
+          Edit
+        </a>
         <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" style="display:inline"
               onsubmit="return confirm('Delete this user?');">
-          <button type="submit" class="ghost">Delete</button>
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
         </form>
       </td>
     </tr>
@@ -111,5 +135,37 @@
     <p>No users found.</p>
   </div>
 </main>
+
+<script>
+  // Toggleing enabled and disabled for a user
+  document.addEventListener('click', async (e) => {
+    const pill = e.target.closest('.pill[data-id]');
+    if (!pill) return;
+
+    const id = pill.getAttribute('data-id');
+    if (!id) return;
+
+
+    pill.style.pointerEvents = 'none';
+    const wasEnabled = pill.getAttribute('data-enabled') === 'true';
+
+    try {
+      const res = await fetch(`/admin/users/${id}/toggle`, { method: 'POST' });
+      if (!res.ok) throw new Error('Toggle failed');
+
+      const nowEnabled = !wasEnabled;
+      pill.setAttribute('data-enabled', String(nowEnabled));
+      pill.classList.toggle('ok', nowEnabled);
+      pill.classList.toggle('no', !nowEnabled);
+      const label = pill.querySelector('.label');
+      if (label) label.textContent = nowEnabled ? 'ENABLED' : 'DISABLED';
+    } catch (err) {
+      alert('Could not change enabled status. Please try again.');
+      console.error(err);
+    } finally {
+      pill.style.pointerEvents = '';
+    }
+  });
+</script>
 </body>
 </html>

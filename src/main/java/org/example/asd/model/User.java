@@ -16,7 +16,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String password; // stored with BCrypt
+    private String password;
 
     @Column(nullable = false)
     private boolean enabled = true;

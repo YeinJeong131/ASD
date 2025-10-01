@@ -17,25 +17,32 @@
         .actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
         button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
         .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
-        nav a{margin-left:12px;text-decoration:none;color:#111827}
         .msg{color:#065f46;margin:10px 0}
         .danger{border-color:#fecaca}
         .danger h2{color:#991b1b}
         .danger button{background:#991b1b}
         .hint{font-size:12px;color:#64748b;margin-top:6px}
-        .err{color:#991b1b;margin:10px 0}
+
+        nav{float:right; display:flex; gap:8px; align-items:center}
+        nav a, nav button{
+            padding:8px 12px;
+            border-radius:10px;
+            border:1px solid #e5e7eb;
+            background:#fff;
+            color:#111827;
+            text-decoration:none;
+            cursor:pointer
+        }
+        nav form{display:inline}
     </style>
 </head>
 <body>
 <header>
     <div class="wrap">
         <strong>Betterpedia</strong>
-        <nav style="float:right">
-            <form th:action="@{/logout}" method="post" style="display:inline">
-                <button type="submit"
-                        style="background:none;border:0;padding:0;margin:0;cursor:pointer;text-decoration:underline;color:inherit">
-                    Sign out
-                </button>
+        <nav>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Sign out</button>
             </form>
         </nav>
     </div>
@@ -44,10 +51,9 @@
 <main class="wrap">
     <h1>Account Settings</h1>
     <p th:if="${msg}" class="msg" th:text="${msg}"></p>
-    <p th:if="${error}" class="err" th:text="${error}"></p>
 
+<!--    Profile-->
     <div class="grid">
-        <!-- Profile -->
         <section class="card">
             <h2>Profile</h2>
             <form th:action="@{/account/profile}" method="post">
@@ -56,7 +62,7 @@
                 <input name="email" type="email" th:value="${user.email}" required />
                 <div class="actions">
                     <button type="submit">Save profile</button>
-                    <a th:href="@{/account}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
                 </div>
             </form>
         </section>
@@ -83,7 +89,7 @@
             </form>
         </section>
 
-        <!-- Danger zone -->
+        <!-- Danger Warning for deletion -->
         <section class="card danger">
             <h2>Delete account</h2>
             <p class="hint">This permanently removes your account and roles.</p>
@@ -92,7 +98,7 @@
                 <input type="hidden" name="uid" th:value="${user.id}" />
                 <div class="actions">
                     <button type="submit">Delete my account</button>
-                    <a th:href="@{/account}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
                 </div>
             </form>
         </section>
