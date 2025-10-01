@@ -5,33 +5,34 @@
   <title th:text="${pageTitle} ?: 'Login'">Login</title>
   <style>
     body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
-    header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0}
-    .wrap{max-width:960px;margin:24px auto;padding:0 16px}
-    .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-    .title{margin:0 0 8px 0}
-    label{display:block;font-size:14px;margin-top:12px}
-    input{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
-    button{margin-top:16px;width:100%;padding:10px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
-    nav a{margin-left:12px;text-decoration:none;color:#111827}
-    .hint{font-size:12px;color:#64748b;margin-top:6px}
-    .err{color:#b91c1c;margin-top:8px}
-    .ok{color:#065f46;margin-top:8px}
-
-    /* pretty toggle */
-    .toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer;margin-top:10px}
-    .toggle input{display:none}
-    .toggle .slider{width:38px;height:22px;background:#e5e7eb;border-radius:999px;position:relative;transition:.2s}
-    .toggle .slider::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,.15);transition:.2s}
-    .toggle input:checked + .slider{background:#111827}
-    .toggle input:checked + .slider::after{transform:translateX(16px)}
+    header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
+    /* Hide the top-right nav ONLY on login page */
+    header nav{display:none !important;}
+    .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    h1{margin:0 0 12px 0}
+    label{display:block;font-size:14px;margin:10px 0 6px 0}
+    input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:10px}
+    .btn{width:100%;padding:12px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
+    .btn-ghost{display:block;text-align:center;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;color:#111827;text-decoration:none}
+    .row{display:flex;gap:10px;align-items:center}
+    .switch{appearance:none;width:36px;height:20px;background:#e5e7eb;border-radius:999px;position:relative;outline:0;cursor:pointer}
+    .switch:checked{background:#111827}
+    .switch:before{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .15s}
+    .switch:checked:before{transform:translateX(16px)}
+    .center{max-width:540px;margin:32px auto}
+    .or{display:flex;align-items:center;gap:12px;margin:12px 0}
+    .or hr{flex:1;border:0;border-top:1px solid #e5e7eb}
+    .msg{margin:8px 0;padding:8px 10px;border-radius:8px}
+    .error{color:#991b1b;background:#fef2f2;border:1px solid #fecaca}
+    .ok{color:#065f46;background:#ecfdf5;border:1px solid #a7f3d0}
   </style>
 </head>
 <body>
-
 <header>
-  <div class="wrap">
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between">
     <strong>Betterpedia</strong>
-    <nav style="float:right">
+    <nav>
       <a th:href="@{/login}">Login</a>
       <a th:href="@{/account}">Account</a>
       <a th:href="@{/admin}">Admin</a>
@@ -39,37 +40,44 @@
   </div>
 </header>
 
-<main class="wrap">
-  <div class="card" style="max-width:420px;margin:32px auto">
-    <h1 class="title">Sign in</h1>
+<main class="wrap center">
+  <h1>Sign in</h1>
 
-    <form th:action="@{/login}" method="post" class="card">
-      <h1 class="title">Sign in</h1>
+  <div class="card">
+    <h2 style="margin:0 0 10px 0">Sign in</h2>
 
-      <label for="username">Email or Username</label>
-      <input id="username" name="username" type="text" required autocomplete="username" />
+    <p th:if="${error}" class="msg error" th:text="${error}">Invalid email or password.</p>
+    <p th:if="${msg}" class="msg ok" th:text="${msg}"></p>
 
-      <label for="password" style="margin-top:8px;">Password</label>
-      <input id="password" name="password" type="password" required autocomplete="current-password" />
+    <!-- LOGIN FORM -->
+    <form method="post" action="/login" style="margin-top:4px">
+      <label>Email or Username</label>
+      <input name="username" type="text" required />
 
-      <label class="toggle" title="Keep me signed in on this device">
-        <input type="checkbox" id="remember" name="remember">
-        <span class="slider"></span>
-        <span>Remember me</span>
-      </label>
+      <label style="margin-top:12px">Password</label>
+      <input name="password" type="password" required />
 
-      <button type="submit">Login</button>
+      <div class="row" style="margin:12px 0">
+        <input class="switch" type="checkbox" name="remember" id="remember">
+        <label for="remember" style="margin:0">Remember me</label>
+      </div>
 
-      <!-- messages -->
-      <p th:if="${error}" class="err" th:text="${error}">Invalid email or password.</p>
-      <p th:if="${msg}" class="ok" th:text="${msg}">You’ve been signed out.</p>
+      <button type="submit" class="btn">Login</button>
     </form>
 
-    <!-- One simple link (removed duplicate/emoji) -->
-    <a th:href="@{/read}"
-       style="display:inline-block;text-align:center;width:100%;margin-top:10px;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;color:#111827;text-decoration:none;">
-      Start reading without an account
-    </a>
+    <!-- OR + SIGN UP LINK (OUTSIDE THE FORM) -->
+    <div class="or">
+      <hr><span style="font-size:12px;color:#64748b">or</span><hr>
+    </div>
+
+    <!-- IMPORTANT: plain href so navigation always happens -->
+    <a href="/signup" class="btn-ghost">Create an account</a>
+
+    <div class="or">
+      <hr><span style="font-size:12px;color:#64748b">or</span><hr>
+    </div>
+
+    <a href="/articles" class="btn-ghost">Start reading without an account</a>
   </div>
 </main>
 </body>

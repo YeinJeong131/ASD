@@ -3,8 +3,8 @@ package org.example.asd.config;
 import org.example.asd.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,34 +19,40 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // dev only
+                // dev only
+                .csrf(csrf -> csrf.disable())
+
+                // allow public pages (including /signup and /articles)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers(
+                                "/", "/login", "/signup", "/articles",
+                                "/error", "/favicon.ico",
+                                "/css/**", "/js/**", "/images/**"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        // everything else may need login later; keep open for now
+                        .anyRequest().permitAll()
                 )
-                .formLogin(login -> login
-                        .loginPage("/login").permitAll()
-                        .defaultSuccessUrl("/post-login", true)
-                )
+
+                // we are handling login in AuthController, not Spring Security's formLogin
+                .formLogin(form -> form.disable())
+
+                // allow our /logout endpoint to redirect back to /login
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
-                )
-                .rememberMe(r -> r
-                        .key("dev-remember-me")
-                        .rememberMeParameter("remember-me")
-                        .tokenValiditySeconds(14 * 24 * 3600)
                 );
+
         return http.build();
     }
 
-    // DEV ONLY: plain text. We'll switch to BCrypt later.
+    // DEV ONLY: plain-text passwords (you already store cleartext). Replace with BCrypt later.
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 
+    // Kept so ROLE checks (like /admin/**) can work if you later switch to Security auth
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepo) {
         return username -> userRepo.findByEmail(username)
