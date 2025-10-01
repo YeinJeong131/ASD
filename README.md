@@ -8,6 +8,7 @@
 **Branch:** `appearance-note-feature`  
 **Developer:** Yein Jeong  
 **Student ID:** 14650170 
+
 **Features:**  
 - Feature 5: Enhance User Experience (Appearance Customization)
 - Feature 6: Highlight & Note System (My Notes Page)
