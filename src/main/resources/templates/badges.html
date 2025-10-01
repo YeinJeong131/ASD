@@ -2,23 +2,59 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Contributor Badges</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .gold { color: goldenrod; font-weight: bold; }
+        .silver { color: silver; font-weight: bold; }
+        .bronze { color: #cd7f32; font-weight: bold; }
+    </style>
 </head>
 <body>
 <h2>Contributor Badge Levels</h2>
 
-<table border="1">
+<table>
+    <thead>
     <tr>
         <th>Username</th>
         <th>Comments</th>
         <th>Edits</th>
         <th>Badge</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="badge : ${badges}">
-        <td th:text="${badge.username}">User</td>
+        <td th:text="${badge.username}">[username]</td>
         <td th:text="${badge.commentCount}">0</td>
         <td th:text="${badge.editCount}">0</td>
-        <td th:text="${badge.badgeLevel}">Bronze</td>
+        <td>
+            <span th:if="${badge.badgeLevel == 'Gold'}" class="gold">🥇 Gold</span>
+            <span th:if="${badge.badgeLevel == 'Silver'}" class="silver">🥈 Silver</span>
+            <span th:if="${badge.badgeLevel == 'Bronze'}" class="bronze">🥉 Bronze</span>
+        </td>
     </tr>
+    </tbody>
 </table>
 </body>
 </html>
