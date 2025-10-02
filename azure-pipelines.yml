@@ -4,15 +4,12 @@
 trigger:
   branches:
     include:
-      - main
-      - build-pipeline
-      - code-workflow
+      - feature/user-management/esha
 
 pr:
   branches:
     include:
-      - main
-      - code-workflow
+      - feature/user-management/esha
 
 pool:
   vmImage: 'windows-latest'
@@ -28,17 +25,31 @@ steps:
     displayName: 'Select JDK 21 (preinstalled)'
 
   # Gradle build
-  - script: gradlew.bat clean build --no-daemon
-    displayName: 'Gradle clean build'
+  - script: gradlew.bat clean build -x test --no-daemon
+    displayName: 'Gradle clean build (without tests)'
 
-  # Gradle test
-  - script: gradlew.bat test --no-daemon
-    displayName: 'Run unit tests'
+  # Step 3: Gradle test and collect results
+  - task: Gradle@2
+    displayName: 'Run unit tests and publish results'
+    inputs:
+      workingDirectory: ''
+      gradleWrapperFile: 'gradlew.bat'
+      tasks: 'test'
+      publishJUnitResults: true
+      testResultsFiles: '**/TEST-*.xml'
+      testRunTitle: 'Unit Tests - Betterpedia'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.21'
 
-  # upload build artifact
+
+
+  # Step 4: upload build artifact
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'build/libs'
       artifactName: 'drop'
       publishLocation: 'Container'
     displayName: 'Publish build artifacts'
+    condition: succeededOrFailed()
+
+
