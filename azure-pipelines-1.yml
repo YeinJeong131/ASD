@@ -20,10 +20,9 @@ steps:
   displayName: Run Gradle :test
   env:
     CI: 'true'
-  inputs:
+  inputs:    
     script: |
       chmod +x ./gradlew
-
 
 - task: PublishTestResults@2
   displayName: Publish JUnit
