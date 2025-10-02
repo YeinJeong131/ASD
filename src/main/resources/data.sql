@@ -1,7 +1,7 @@
 use wiki;
 insert into article(title, body, publish_date, author, tags)  values
 ('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2')),
-('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2')),
+('Title2', 'Hello world. this is the text', curdate(), json_array('noone','yoho', 'davey'), json_array('tag1', 'tag2')),
 ('Java (programming language)',
 'This article is copied from Wikipedia\nThis article is about the object-oriented programming language. For the software platform, see Java (software platform). For the Indonesian island, see Java. For the Indonesian Language, see Javanese. For other uses, see Java (disambiguation). Not to be confused with JavaScript.
 "Openframe" redirects here. For the ten-pin bowling term, see Open frame. Java is a high-level, general-purpose, memory-safe, object-oriented programming language. It is intended to let programmers write once, run anywhere (WORA),[18] meaning that compiled Java code can run on all platforms that support Java without the need to recompile.[19] Java applications are typically compiled to bytecode that can run on any Java virtual machine (JVM) regardless of the underlying computer architecture. The syntax of Java is similar to C and C++, but has fewer low-level facilities than either of them. The Java runtime provides dynamic capabilities (such as reflection and runtime code modification) that are typically not available in traditional compiled languages.

@@ -1,4 +1,5 @@
-export default {
-    testEnvironment: "jsdom",
-    transform: {},
+module.exports = {
+    testEnvironment: 'jsdom',
+    testMatch: ['**/src/**/*.test.js'],
+    testPathIgnorePatterns: ['/node_modules/', '/build/'],
 };

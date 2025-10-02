@@ -16,7 +16,6 @@ export function textToVoice(
 
         const utterance = new SpeechSynthesisUtterance(t);
 
-        // english-only voice selection (inline; no extra function)
         const vs = speechSynthesis.getVoices();
         const voice =
             vs.find(v => v.lang && v.lang.toLowerCase() === 'en-us') ||
