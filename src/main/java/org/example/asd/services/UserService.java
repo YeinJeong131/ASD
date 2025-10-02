@@ -1,3 +1,5 @@
+//a service layer for user operations
+
 package org.example.asd.services;
 
 import org.example.asd.model.Role;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+//repositories for access
 @Service
 public class UserService {
     private final UserRepository users;
@@ -18,11 +21,11 @@ public class UserService {
         this.users = users;
         this.roles = roles;
     }
-
+//fetch a user, or throw if not found
     public User getById(Long id) {
         return users.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
     }
-
+//updating users email, email must not already exist
     @Transactional
     public User updateProfile(Long userId, String email) {
         User u = getById(userId);
@@ -32,7 +35,7 @@ public class UserService {
         u.setEmail(email);
         return users.save(u);
     }
-
+//chnaging users password
     @Transactional
     public void changePassword(Long userId, String newPassword) {
         User u = getById(userId);
@@ -44,7 +47,7 @@ public class UserService {
     public List<User> listAll() {
         return users.findAll();
     }
-
+//creatinga new user, enabling roles
     @Transactional
     public User createUser(String email, String password, Collection<String> roleNames, boolean enabled) {
         if (users.existsByEmail(email)) throw new IllegalArgumentException("Email already in use");
@@ -55,26 +58,26 @@ public class UserService {
         u.setRoles(resolveRoles(roleNames));
         return users.save(u);
     }
-
+//enable or disable a user
     @Transactional
     public User setEnabled(Long userId, boolean enabled) {
         User u = getById(userId);
         u.setEnabled(enabled);
         return users.save(u);
     }
-
+//updating a users roles
     @Transactional
     public User updateRoles(Long userId, Collection<String> roleNames) {
         User u = getById(userId);
         u.setRoles(resolveRoles(roleNames));
         return users.save(u);
     }
-
+//delete a user by ID
     @Transactional
     public void deleteUser(Long userId) {
         users.deleteById(userId);
     }
-
+//toggle the enable/disables
     @Transactional
     public boolean toggleEnabled(Long userId) {
         User u = getById(userId);

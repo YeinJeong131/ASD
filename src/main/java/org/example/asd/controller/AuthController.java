@@ -1,3 +1,5 @@
+//controller for all logins, signups, article
+
 package org.example.asd.controller;
 
 import jakarta.servlet.http.Cookie;

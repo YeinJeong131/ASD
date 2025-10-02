@@ -1,3 +1,4 @@
+<!--Admin dashboard: crud-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
@@ -17,10 +18,11 @@
     .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:16px}
     label{display:block;font-size:14px;margin-top:10px}
     input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;margin-top:6px;border:1px solid var(--line);border-radius:10px}
+    select{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
     .row{display:flex;gap:10px;flex-wrap:wrap}
     .row > *{flex:1}
     .actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-     /*Buttons */
+    /* Buttons */
     .btn{padding:10px 14px;border:1px solid var(--btn);border-radius:10px;background:var(--btn);color:var(--btn-ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
     .btn:hover{background:var(--btn-hover);border-color:var(--btn-hover)}
     .btn-ghost{background:#fff;color:#111827;border:1px solid var(--line)}
@@ -33,15 +35,16 @@
     th,td{padding:12px 14px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:14px}
     th{background:#f8fafc;font-weight:600;color:#334155}
     tr:last-child td{border-bottom:0}
-    /* Status */
+    /* Status pill  */
     .pill{display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid transparent;cursor:pointer;user-select:none;transition:transform .05s ease}
     .pill.ok{background:var(--ok-bg);color:var(--ok-ink);border-color:#bbf7d0}
     .pill.no{background:var(--no-bg);color:var(--no-ink);border-color:#fecaca}
     .pill:active{transform:scale(.98)}
     .pill .dot{width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.7}
-    /* Header */
+    /* Header nav */
     nav{float:right;display:flex;gap:8px;align-items:center}
     nav form{display:inline}
+    .msg{color:#065f46;margin:10px 0}
   </style>
 </head>
 <body>
@@ -49,7 +52,6 @@
   <div class="wrap">
     <strong>Betterpedia</strong>
     <nav>
-      <!-- Admin page -->
       <form th:action="@{/logout}" method="post">
         <button class="btn btn-ghost btn-sm" type="submit">Sign out</button>
       </form>
@@ -58,9 +60,9 @@
 </header>
 
 <main class="wrap">
-  <h1>Admin · Users</h1>
+  <h1>Admin</h1>
 
-  <p th:if="${msg}" class="msg" th:text="${msg}" style="color:#065f46;margin:10px 0"></p>
+  <p th:if="${msg}" class="msg" th:text="${msg}"></p>
 
   <!-- Create user -->
   <form th:action="@{/admin/users}" method="post" class="card">
@@ -85,34 +87,49 @@
       <button type="submit" class="btn">Create</button>
       <button type="reset" class="btn btn-ghost">Clear</button>
     </div>
-    <p style="font-size:12px;color:var(--muted);margin-top:8px">Default role: <code>ROLE_USER</code>. Security &amp; hashing come later.</p>
   </form>
 
-  <!-- Users  -->
+  <!-- Users table -->
   <table class="card" th:if="${!#lists.isEmpty(users)}">
     <thead>
     <tr>
       <th style="width:70px;">ID</th>
       <th>Email</th>
-      <th>Password (dev)</th>
-      <th style="width:160px;">Enabled</th>
-      <th style="width:160px;">Actions</th>
+      <th>Password</th>
+      <th style="width:170px;">Role</th>
+      <th style="width:150px;">Enabled</th>
+      <th style="width:200px;">Actions</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="u : ${users}" th:attr="data-id=${u.id}">
+    <tr th:each="u : ${users}" th:with="isAdmin=${u.roles.?[name=='ROLE_ADMIN'].size() > 0}">
       <td th:text="${u.id}">1</td>
       <td th:text="${u.email}">user@example.com</td>
       <td th:text="${u.password}">changeme</td>
+
+      <!-- Role select -->
       <td>
-        <span class="pill"
-              th:classappend="${u.enabled} ? ' ok' : ' no'"
-              th:attr="data-id=${u.id}, data-enabled=${u.enabled}"
-              title="Click to toggle">
+        <form th:action="@{/admin/users/{id}/role(id=${u.id})}" method="post" style="display:flex; gap:8px; align-items:center">
+          <select name="role">
+            <option value="USER" th:selected="${!isAdmin}">User</option>
+            <option value="ADMIN" th:selected="${isAdmin}">Admin</option>
+          </select>
+          <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+        </form>
+      </td>
+
+      <!-- Enabled clickable pill -->
+      <td>
+          <span class="pill"
+                th:classappend="${u.enabled} ? ' ok' : ' no'"
+                th:attr="data-id=${u.id}, data-enabled=${u.enabled}"
+                title="Click to toggle">
             <span class="dot" aria-hidden="true"></span>
             <span class="label" th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'">ENABLED</span>
           </span>
       </td>
+
+      <!-- Actions -->
       <td>
         <a th:href="@{/admin/users/{id}/edit(id=${u.id})}"
            class="btn btn-ghost btn-sm" title="Edit user">
@@ -137,14 +154,13 @@
 </main>
 
 <script>
-  // Toggleing enabled and disabled for a user
+  // Toggle ENABLED/DISABLED
   document.addEventListener('click', async (e) => {
     const pill = e.target.closest('.pill[data-id]');
     if (!pill) return;
 
     const id = pill.getAttribute('data-id');
     if (!id) return;
-
 
     pill.style.pointerEvents = 'none';
     const wasEnabled = pill.getAttribute('data-enabled') === 'true';

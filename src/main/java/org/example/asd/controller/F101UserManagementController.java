@@ -1,3 +1,5 @@
+//controller for account management and admin
+
 package org.example.asd.controller;
 
 import org.example.asd.services.UserService;
@@ -7,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class F101UserManagementController {
@@ -17,48 +18,39 @@ public class F101UserManagementController {
     public F101UserManagementController(UserService userService) {
         this.userService = userService;
     }
-
-    //Account
+//updating email
     @PostMapping("/account/profile")
     public String saveProfile(@RequestParam Long uid,
                               @RequestParam String email,
                               RedirectAttributes ra) {
         userService.updateProfile(uid, email);
         ra.addFlashAttribute("msg", "Profile updated");
-        return "redirect:/account";
+        return "redirect:/account?uid=" + uid;
     }
-
+//change password
     @PostMapping("/account/password")
     public String changePassword(@RequestParam Long uid,
                                  @RequestParam String newPassword,
-                                 @RequestParam String confirm,
                                  RedirectAttributes ra) {
-
-        if (!Objects.equals(newPassword, confirm)) {
-            ra.addFlashAttribute("error", "Passwords do not match.");
-            return "redirect:/account";
-        }
-
         userService.changePassword(uid, newPassword);
         ra.addFlashAttribute("msg", "Password changed");
-        return "redirect:/account";
+        return "redirect:/account?uid=" + uid;
     }
-
+//user deleteing their own accouny
     @PostMapping("/account/delete")
     public String deleteMyAccount(@RequestParam Long uid, RedirectAttributes ra) {
         userService.deleteUser(uid);
         ra.addFlashAttribute("msg", "Your account was deleted");
         return "redirect:/login";
     }
-
-    //  Admin
+    //get admin dashboard
     @GetMapping("/admin")
     public String adminPage(Model model) {
         model.addAttribute("pageTitle", "Admin");
         model.addAttribute("users", userService.listAll());
         return "admin";
     }
-
+//creating user
     @PostMapping("/admin/users")
     public String createUser(@RequestParam String email,
                              @RequestParam String password,
@@ -68,14 +60,28 @@ public class F101UserManagementController {
         ra.addFlashAttribute("msg", "User created");
         return "redirect:/admin";
     }
-
+//editing email,password
     @PostMapping("/admin/users/{id}/toggle")
     public String toggleEnabled(@PathVariable Long id, RedirectAttributes ra) {
         boolean nowEnabled = userService.toggleEnabled(id);
         ra.addFlashAttribute("msg", "User " + id + " is now " + (nowEnabled ? "ENABLED" : "DISABLED"));
         return "redirect:/admin";
     }
-
+//editing role
+    @PostMapping("/admin/users/{id}/role")
+    public String changeRole(@PathVariable Long id,
+                             @RequestParam String role,
+                             RedirectAttributes ra) {
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            userService.updateRoles(id, List.of("ROLE_ADMIN", "ROLE_USER"));
+            ra.addFlashAttribute("msg", "User " + id + " set to ADMIN");
+        } else {
+            userService.updateRoles(id, List.of("ROLE_USER"));
+            ra.addFlashAttribute("msg", "User " + id + " set to USER");
+        }
+        return "redirect:/admin";
+    }
+//
     @GetMapping("/admin/users/{id}/edit")
     public String editUserForm(@PathVariable Long id, Model model) {
         model.addAttribute("pageTitle", "Edit User");
@@ -95,7 +101,7 @@ public class F101UserManagementController {
         ra.addFlashAttribute("msg", "User updated");
         return "redirect:/admin";
     }
-
+//delete user
     @PostMapping("/admin/users/{id}/delete")
     public String deleteUser(@PathVariable Long id, RedirectAttributes ra) {
         userService.deleteUser(id);

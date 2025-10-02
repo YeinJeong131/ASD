@@ -1,3 +1,5 @@
+//springframework data for the User, finding by each users email
+
 package org.example.asd.repository;
 
 import org.example.asd.model.User;

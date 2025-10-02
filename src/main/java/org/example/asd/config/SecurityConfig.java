@@ -1,3 +1,5 @@
+//setting up spring security
+
 package org.example.asd.config;
 
 import org.example.asd.repository.UserRepository;
@@ -46,7 +48,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // plain text passwords
+    // FOR PASSSWORDS -plain text passwords
     @Bean
     PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();

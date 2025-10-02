@@ -1,3 +1,5 @@
+//entity for roles
+
 package org.example.asd.model;
 
 import jakarta.persistence.*;
