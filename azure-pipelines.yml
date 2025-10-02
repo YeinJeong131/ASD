@@ -1,6 +1,3 @@
-# Azure Pipelines configuration for Java (Gradle) project
-# Supports Windows agent, JDK 21, build & test, PR validation
-
 trigger:
   branches:
     include:
@@ -18,7 +15,7 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-  # JDK 21
+  # Use JDK 21
   - powershell: |
       Write-Host "Using JDK 21"
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$env:JAVA_HOME_21_X64"
@@ -27,18 +24,25 @@ steps:
       java -version
     displayName: 'Select JDK 21 (preinstalled)'
 
-  # Gradle build
+  # Gradle Build
   - script: gradlew.bat clean build --no-daemon
     displayName: 'Gradle clean build'
 
-  # Gradle test
+  # Run Tests
   - script: gradlew.bat test --no-daemon
     displayName: 'Run unit tests'
 
-  # upload build artifact
+  # ✅ Publish test results to Azure (JUnit XML)
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+      testRunTitle: 'Unit Test Results'
+    displayName: 'Publish Test Results'
+
+  # ✅ Publish Build Artifacts
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: 'build/libs'
       artifactName: 'drop'
       publishLocation: 'Container'
-    displayName: 'Publish build artifacts'
+    displayName: 'Publish Build Artifacts'
