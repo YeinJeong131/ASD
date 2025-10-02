@@ -1,15 +1,12 @@
 trigger:
   branches:
     include:
-      - main
-      - build-pipeline
-      - code-workflow
+      - feature/discussion-page/yuhan
 
 pr:
   branches:
     include:
-      - main
-      - code-workflow
+      - feature/discussion-page/yuhan
 
 pool:
   vmImage: 'windows-latest'
