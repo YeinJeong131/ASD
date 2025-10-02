@@ -44,3 +44,5 @@ function showArticleByID(id){
 pick.addEventListener('change', () => showArticleByID(pick.value));
 
 loadArticleTitles();
+
+export {loadArticleTitles, showArticleByID}
