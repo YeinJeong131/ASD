@@ -1,11 +1,61 @@
-use wiki;
-insert into article(title, body, publish_date, author, tags)  values
-('DummyData', 'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol', curdate(), json_array('noone'), json_array('tag1', 'tag2')),
-('Title2', 'Hello world. this is the text', curdate(), json_array('noone','yoho', 'davey'), json_array('tag1', 'tag2')),
-('Java (programming language)',
-'This article is copied from Wikipedia\nThis article is about the object-oriented programming language. For the software platform, see Java (software platform). For the Indonesian island, see Java. For the Indonesian Language, see Javanese. For other uses, see Java (disambiguation). Not to be confused with JavaScript.
-"Openframe" redirects here. For the ten-pin bowling term, see Open frame. Java is a high-level, general-purpose, memory-safe, object-oriented programming language. It is intended to let programmers write once, run anywhere (WORA),[18] meaning that compiled Java code can run on all platforms that support Java without the need to recompile.[19] Java applications are typically compiled to bytecode that can run on any Java virtual machine (JVM) regardless of the underlying computer architecture. The syntax of Java is similar to C and C++, but has fewer low-level facilities than either of them. The Java runtime provides dynamic capabilities (such as reflection and runtime code modification) that are typically not available in traditional compiled languages.
-Java gained popularity shortly after its release, and has been a popular programming language since then.[20] Java was the third most popular programming language in 2022 according to GitHub.[21] Although still widely popular, there has been a gradual decline in use of Java in recent years with other languages using JVM gaining popularity.[22]
-Java was designed by James Gosling at Sun Microsystems. It was released in May 1995 as a core component of Sun''s Java platform. The original and reference implementation Java compilers, virtual machines, and class libraries were released by Sun under proprietary licenses. As of May 2007, in compliance with the specifications of the Java Community Process, Sun had relicensed most of its Java technologies under the GPL-2.0-only license. Oracle, which bought Sun in 2010, offers its own HotSpot Java Virtual Machine. However, the official reference implementation is the OpenJDK JVM, which is open-source software used by most developers and is the default JVM for almost all Linux distributions.
-Java 25 is the version current as of September 2025. Java 8, 11, 17, 21, and 25 are long-term support versions still under maintenance.',
-'2020-5-5', json_array('Wikipedia'), json_array('java', 'programming'));
+# USE wiki;
+
+-- Reset dev data (children first)
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE user_roles;
+TRUNCATE TABLE article_authors;
+TRUNCATE TABLE article_tags;
+TRUNCATE TABLE users;
+TRUNCATE TABLE roles;
+TRUNCATE TABLE article;
+SET FOREIGN_KEY_CHECKS=1;
+
+-- ========= ROLES =========
+INSERT INTO roles (name) VALUES ('ROLE_USER')
+ON DUPLICATE KEY UPDATE name = name;
+
+INSERT INTO roles (name) VALUES ('ROLE_ADMIN')
+ON DUPLICATE KEY UPDATE name = name;
+
+-- ========= USERS =========
+-- Default user
+INSERT INTO users (email, password, enabled)
+VALUES ('user1@example.com','user123',TRUE);
+
+-- Default admin
+INSERT INTO users (email, password, enabled)
+VALUES ('admin@betterpedia.local','admin123',TRUE);
+
+-- ========= USER ↔ ROLE LINKS =========
+-- user1 → ROLE_USER
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+         JOIN roles r ON r.name = 'ROLE_USER'
+WHERE u.email = 'user1@example.com';
+
+-- admin → ROLE_ADMIN
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+         JOIN roles r ON r.name = 'ROLE_ADMIN'
+WHERE u.email = 'admin@betterpedia.local';
+
+-- admin → ROLE_USER (optional convenience)
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+         JOIN roles r ON r.name = 'ROLE_USER'
+WHERE u.email = 'admin@betterpedia.local';
+
+-- ========= ARTICLES (sample) =========
+-- If your schema for `article` changes, feel free to comment this block out.
+INSERT INTO article (title, body, publish_date, lan)
+VALUES ('DummyData',
+        'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol',
+        CURDATE(),
+        'ENGLISH');
+
+-- Link sample authors/tags to the article we just inserted (id = 1 after TRUNCATE)
+INSERT INTO article_authors (article_id, author) VALUES (1, 'Nima');
+INSERT INTO article_tags (article_id, tag)       VALUES (1, 'Dummy');

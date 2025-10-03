@@ -1,0 +1,47 @@
+<!--Reader landing-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${pageTitle} ?: 'Articles'">Articles</title>
+    <style>
+        body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
+        header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
+        .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+        h1{margin:0 0 12px 0}
+        nav{float:right; display:flex; gap:8px; align-items:center}
+        nav a, nav button{padding:8px 12px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#111827;text-decoration:none;cursor:pointer}
+        nav a.primary{background:#111827;color:#fff;border-color:#111827}
+        nav form{display:inline}
+        .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+        .muted{color:#64748b}
+    </style>
+</head>
+<body>
+<header>
+    <div class="wrap">
+        <strong>Betterpedia</strong>
+
+        <nav>
+            <a th:if="${session.uid == null}" class="primary" th:href="@{/signup}">Sign up</a>
+
+            <a th:if="${session.uid != null}" th:href="@{/account}">Account</a>
+            <form th:if="${session.uid != null}" th:action="@{/logout}" method="post">
+                <button type="submit">Sign out</button>
+            </form>
+        </nav>
+    </div>
+</header>
+
+<main class="wrap">
+    <h1>Articles</h1>
+
+    <div class="card">
+        <p class="muted">
+            Placeholder page.
+        </p>
+    </div>
+</main>
+</body>
+</html>

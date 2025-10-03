@@ -1,13 +1,49 @@
-drop table if exists article;
+CREATE DATABASE IF NOT EXISTS wiki CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-use wiki;
+USE wiki;
 
-create table if not exists article (
-                                       id bigint auto_increment primary key,
-                                       title varchar(255) not null,
-                                       body longtext,
-                                       publish_date date,
-                                       author json default (json_array()),
-                                       tags json default (json_array())
-);
-use wiki;
+CREATE TABLE IF NOT EXISTS article (
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(255) NOT NULL,
+body LONGTEXT,
+publish_date DATE,
+lan VARCHAR(32)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS article_authors (
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+article_id BIGINT NOT NULL,
+author VARCHAR(255) NOT NULL,
+CONSTRAINT fk_article_author
+FOREIGN KEY (article_id) REFERENCES article(id) ON UPDATE CASCADE ON DELETE CASCADE,
+UNIQUE KEY uk_article_author (article_id, author)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS article_tags (
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+article_id BIGINT NOT NULL,
+tag VARCHAR(64) NOT NULL,
+CONSTRAINT fk_article_tag
+FOREIGN KEY (article_id) REFERENCES article(id) ON UPDATE CASCADE ON DELETE CASCADE,
+UNIQUE KEY uk_article_tag (article_id, tag)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS roles (
+id   BIGINT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(40) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS users (
+id BIGINT PRIMARY KEY AUTO_INCREMENT,
+email VARCHAR(120) NOT NULL UNIQUE,
+password VARCHAR(255) NOT NULL,
+enabled  BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_roles (
+user_id BIGINT NOT NULL,
+role_id BIGINT NOT NULL,
+PRIMARY KEY (user_id, role_id),
+CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

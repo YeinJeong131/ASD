@@ -1,0 +1,53 @@
+<!--registration page, send users to article after-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${pageTitle} ?: 'Create an account'">Create an account</title>
+  <style>
+    body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
+    header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
+    .wrap{max-width:560px;margin:24px auto;padding:0 16px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    h1{margin:0 0 12px 0}
+    label{display:block;font-size:14px;margin-top:10px}
+    input{width:100%;padding:10px;margin-top:6px;border:1px solid #e5e7eb;border-radius:10px}
+    .actions{margin-top:12px;display:flex;gap:8px}
+    button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
+    .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
+    .msg{margin:10px 0;color:#991b1b}
+    nav a{margin-right:8px;text-decoration:none;color:#111827}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <strong>Betterpedia</strong>
+    <nav style="float:right">
+      <a th:href="@{/login}">Back to login</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Create an account</h1>
+  <p th:if="${error}" class="msg" th:text="${error}"></p>
+
+  <form th:action="@{/signup}" method="post" class="card">
+    <label>Email</label>
+    <input name="email" type="email" placeholder="you@example.com" required />
+
+    <label>Password</label>
+    <input name="password" type="password" placeholder="••••••••" required />
+
+    <label>Confirm password</label>
+    <input name="confirm" type="password" placeholder="Repeat password" required />
+
+    <div class="actions">
+      <button type="submit">Create account</button>
+      <a th:href="@{/login}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>
