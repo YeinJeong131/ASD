@@ -4,12 +4,14 @@
 trigger:
   branches:
     include:
-      - feature/discussion-page/yuhan
+      - main
+      - feature/*
 
 pr:
   branches:
     include:
-      - feature/discussion-page/yuhan
+      - main
+      - feature/*
 
 pool:
   vmImage: 'windows-latest'
@@ -19,12 +21,12 @@ steps:
   - powershell: |
       Write-Host "Using JDK 21"
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$env:JAVA_HOME_21_X64"
-      $env:JAVA_HOME = $env:JAVA_HOME_21_X64
+      $env:JAVA_HOME = $env:JAVA_HOME_21_X64"
       $env:Path = "$env:JAVA_HOME\bin;" + $env:Path
       java -version
     displayName: 'Select JDK 21 (preinstalled)'
 
-  # Step 2: Gradle build (no tests here)
+  # Step 2: Gradle build (without tests)
   - script: gradlew.bat clean build -x test --no-daemon
     displayName: 'Gradle clean build (skip tests)'
 

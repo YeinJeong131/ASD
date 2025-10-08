@@ -1,185 +1,159 @@
-<!--Admin dashboard: crud-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title th:text="${pageTitle} ?: 'Admin'">Admin</title>
+  <title>Admin • User Management</title>
   <style>
-    :root{
-      --bg:#f6f8fb;--ink:#0f172a;--muted:#64748b;--card:#fff;--line:#e5e7eb;
-      --ok-bg:#ecfdf5;--ok-ink:#065f46;--no-bg:#fef2f2;--no-ink:#991b1b;
-      --btn:#111827;--btn-ink:#fff;--btn-hover:#0b1222
-    }
-    *{box-sizing:border-box}
-    body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:var(--bg);color:var(--ink)}
-    header{padding:16px 20px;background:#fff;border-bottom:1px solid var(--line)}
-    .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
-    h1{margin:0 0 12px 0}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:16px}
-    label{display:block;font-size:14px;margin-top:10px}
-    input[type="text"],input[type="email"],input[type="password"]{width:100%;padding:10px;margin-top:6px;border:1px solid var(--line);border-radius:10px}
-    select{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .row > *{flex:1}
-    .actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-    /* Buttons */
-    .btn{padding:10px 14px;border:1px solid var(--btn);border-radius:10px;background:var(--btn);color:var(--btn-ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
-    .btn:hover{background:var(--btn-hover);border-color:var(--btn-hover)}
-    .btn-ghost{background:#fff;color:#111827;border:1px solid var(--line)}
-    .btn-ghost:hover{border-color:#cbd5e1}
-    .btn-danger{background:#991b1b;border-color:#991b1b}
-    .btn-danger:hover{background:#7f1616;border-color:#7f1616}
-    .btn-sm{padding:8px 12px;border-radius:10px}
-    /* Table */
-    table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-    th,td{padding:12px 14px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:14px}
-    th{background:#f8fafc;font-weight:600;color:#334155}
-    tr:last-child td{border-bottom:0}
-    /* Status pill  */
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid transparent;cursor:pointer;user-select:none;transition:transform .05s ease}
-    .pill.ok{background:var(--ok-bg);color:var(--ok-ink);border-color:#bbf7d0}
-    .pill.no{background:var(--no-bg);color:var(--no-ink);border-color:#fecaca}
-    .pill:active{transform:scale(.98)}
-    .pill .dot{width:8px;height:8px;border-radius:999px;background:currentColor;opacity:.7}
-    /* Header nav */
-    nav{float:right;display:flex;gap:8px;align-items:center}
-    nav form{display:inline}
-    .msg{color:#065f46;margin:10px 0}
+    body {font-family: ui-sans-serif, system-ui, Arial; margin:0; background:#f6f8fb; color:#0f172a;}
+    header {padding:16px 20px; background:#fff; border-bottom:1px solid #e5e7eb;}
+    .wrap {max-width:1100px; margin:24px auto; padding:0 16px;}
+    .grid {display:grid; grid-template-columns: 1fr; gap:16px;}
+    .card {background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04);}
+    .row {display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+    input, select {padding:10px; border:1px solid #e5e7eb; border-radius:10px;}
+    button {padding:10px 12px; border-radius:10px; border:0; background:#111827; color:#fff; cursor:pointer;}
+    button.ghost {background:#fff; color:#111827; border:1px solid #e5e7eb;}
+    table {width:100%; border-collapse:collapse; margin-top:8px;}
+    th, td {text-align:left; padding:10px; border-bottom:1px solid #e5e7eb; font-size:14px;}
+    .badge {display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid #e5e7eb; font-size:12px;}
+    nav a {margin-right:12px; text-decoration:none; color:#111827;}
+    /* 모달 스타일 추가 */
+    .modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;}
+    .modal.active {display:flex; align-items:center; justify-content:center;}
+    .modal-content {background:#fff; border-radius:16px; padding:24px; max-width:500px; width:90%;}
+    .modal-content h3 {margin:0 0 16px 0;}
+    .modal-content label {display:block; margin-top:12px; font-size:14px;}
+    .modal-content input {width:100%; padding:10px; margin-top:6px; border:1px solid #e5e7eb; border-radius:10px;}
+    .modal-actions {display:flex; gap:8px; margin-top:16px;}
+    .msg {color:#065f46; margin:10px 0; padding:10px; background:#ecfdf5; border-radius:8px;}
   </style>
 </head>
+
 <body>
 <header>
   <div class="wrap">
     <strong>Betterpedia</strong>
-    <nav>
-      <form th:action="@{/logout}" method="post">
-        <button class="btn btn-ghost btn-sm" type="submit">Sign out</button>
-      </form>
+    <nav style="float:right">
+      <a href="/login">Login</a>
+      <a href="/account">Account</a>
+      <a href="/admin">Admin</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <h1>Admin</h1>
 
+  <!-- 성공 메시지 표시 -->
   <p th:if="${msg}" class="msg" th:text="${msg}"></p>
 
-  <!-- Create user -->
-  <form th:action="@{/admin/users}" method="post" class="card">
-    <h2 style="margin:0 0 8px 0;">Create user</h2>
-    <div class="row">
-      <div>
-        <label>Email</label>
-        <input name="email" type="email" placeholder="user@example.com" required />
+  <div class="card">
+    <div class="row" style="justify-content:space-between;">
+      <div class="row">
+        <input placeholder="Search users by name or email" style="min-width:260px;" />
+        <select>
+          <option>All roles</option>
+          <option>Viewer</option>
+          <option>User</option>
+          <option>Admin</option>
+        </select>
+        <select>
+          <option>Status: Any</option>
+          <option>Active</option>
+          <option>Suspended</option>
+        </select>
       </div>
-      <div>
-        <label>Password</label>
-        <input name="password" type="password" placeholder="changeme" required />
-      </div>
-      <div style="flex:0 0 170px;align-self:flex-end;">
-        <label style="display:flex;align-items:center;gap:8px;margin-top:0;">
-          <input type="checkbox" name="enabled" />
-          <span>Enabled</span>
-        </label>
+      <div class="row">
+        <!-- 버튼 클릭 시 모달 열기 -->
+        <button onclick="openCreateModal()">+ Create User</button>
       </div>
     </div>
-    <div class="actions">
-      <button type="submit" class="btn">Create</button>
-      <button type="reset" class="btn btn-ghost">Clear</button>
-    </div>
-  </form>
-
-  <!-- Users table -->
-  <table class="card" th:if="${!#lists.isEmpty(users)}">
-    <thead>
-    <tr>
-      <th style="width:70px;">ID</th>
-      <th>Email</th>
-      <th>Password</th>
-      <th style="width:170px;">Role</th>
-      <th style="width:150px;">Enabled</th>
-      <th style="width:200px;">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="u : ${users}" th:with="isAdmin=${u.roles.?[name=='ROLE_ADMIN'].size() > 0}">
-      <td th:text="${u.id}">1</td>
-      <td th:text="${u.email}">user@example.com</td>
-      <td th:text="${u.password}">changeme</td>
-
-      <!-- Role select -->
-      <td>
-        <form th:action="@{/admin/users/{id}/role(id=${u.id})}" method="post" style="display:flex; gap:8px; align-items:center">
-          <select name="role">
-            <option value="USER" th:selected="${!isAdmin}">User</option>
-            <option value="ADMIN" th:selected="${isAdmin}">Admin</option>
-          </select>
-          <button type="submit" class="btn btn-ghost btn-sm">Save</button>
-        </form>
-      </td>
-
-      <!-- Enabled clickable pill -->
-      <td>
-          <span class="pill"
-                th:classappend="${u.enabled} ? ' ok' : ' no'"
-                th:attr="data-id=${u.id}, data-enabled=${u.enabled}"
-                title="Click to toggle">
-            <span class="dot" aria-hidden="true"></span>
-            <span class="label" th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'">ENABLED</span>
-          </span>
-      </td>
-
-      <!-- Actions -->
-      <td>
-        <a th:href="@{/admin/users/{id}/edit(id=${u.id})}"
-           class="btn btn-ghost btn-sm" title="Edit user">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:4px">
-            <path d="M12 20h9"/>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-          </svg>
-          Edit
-        </a>
-        <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" style="display:inline"
-              onsubmit="return confirm('Delete this user?');">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-        </form>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-
-  <div th:if="${#lists.isEmpty(users)}" class="card">
-    <p>No users found.</p>
   </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 8px 0;">Users</h2>
+    <table>
+      <thead>
+      <tr>
+        <th style="width:10%">ID</th>
+        <th style="width:30%">Email</th>
+        <th style="width:20%">Password</th>
+        <th style="width:15%">Status</th>
+        <th style="width:25%">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- DB에서 가져온 실제 데이터 -->
+      <tr th:each="u : ${users}">
+        <td th:text="${u.id}">1</td>
+        <td th:text="${u.email}">user@example.com</td>
+        <td th:text="${u.password}">password</td>
+        <td>
+          <form th:action="@{/admin/users/{id}/toggle(id=${u.id})}" method="post" style="display:inline">
+            <button type="submit"
+                    class="badge"
+                    th:style="${u.enabled} ? 'background:#ecfdf5;color:#065f46;border:0' : 'background:#fef2f2;color:#991b1b;border:0'"
+                    th:text="${u.enabled} ? 'ENABLED' : 'DISABLED'">
+              ENABLED
+            </button>
+          </form>
+        </td>
+        <td class="row">
+          <form th:action="@{/admin/users/{id}/delete(id=${u.id})}" method="post" style="display:inline"
+                onsubmit="return confirm('Delete this user?');">
+            <button type="submit" class="ghost">Delete</button>
+          </form>
+        </td>
+      </tr>
+
+      <!-- 사용자가 없을 때 -->
+      <tr th:if="${#lists.isEmpty(users)}">
+        <td colspan="5" style="text-align:center; color:#64748b; padding:20px;">
+          No users found. Click "+ Create User" to add one.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
 </main>
 
+<!-- Create User 모달 -->
+<div id="createModal" class="modal">
+  <div class="modal-content">
+    <h3>Create New User</h3>
+    <form th:action="@{/admin/users}" method="post">
+      <label>Email</label>
+      <input name="email" type="email" placeholder="user@example.com" required />
+
+      <label>Password</label>
+      <input name="password" type="password" placeholder="Enter password" required />
+
+      <label style="display:flex; align-items:center; gap:8px; margin-top:16px;">
+        <input type="checkbox" name="enabled" checked />
+        <span>Account Enabled</span>
+      </label>
+
+      <div class="modal-actions">
+        <button type="submit">Create User</button>
+        <button type="button" class="ghost" onclick="closeCreateModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
-  // Toggle ENABLED/DISABLED
-  document.addEventListener('click', async (e) => {
-    const pill = e.target.closest('.pill[data-id]');
-    if (!pill) return;
+  function openCreateModal() {
+    document.getElementById('createModal').classList.add('active');
+  }
 
-    const id = pill.getAttribute('data-id');
-    if (!id) return;
+  function closeCreateModal() {
+    document.getElementById('createModal').classList.remove('active');
+  }
 
-    pill.style.pointerEvents = 'none';
-    const wasEnabled = pill.getAttribute('data-enabled') === 'true';
-
-    try {
-      const res = await fetch(`/admin/users/${id}/toggle`, { method: 'POST' });
-      if (!res.ok) throw new Error('Toggle failed');
-
-      const nowEnabled = !wasEnabled;
-      pill.setAttribute('data-enabled', String(nowEnabled));
-      pill.classList.toggle('ok', nowEnabled);
-      pill.classList.toggle('no', !nowEnabled);
-      const label = pill.querySelector('.label');
-      if (label) label.textContent = nowEnabled ? 'ENABLED' : 'DISABLED';
-    } catch (err) {
-      alert('Could not change enabled status. Please try again.');
-      console.error(err);
-    } finally {
-      pill.style.pointerEvents = '';
+  // 모달 바깥 클릭 시 닫기
+  document.getElementById('createModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeCreateModal();
     }
   });
 </script>

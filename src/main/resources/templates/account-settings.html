@@ -1,9 +1,10 @@
-<!--Authenticated user settings to edit email, password or delete account-->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8" />
     <title th:text="${pageTitle} ?: 'Account Settings'">Account Settings</title>
+
+
     <style>
         body{font-family:ui-sans-serif,system-ui,Arial;margin:0;background:#f6f8fb;color:#0f172a}
         header{padding:16px 20px;background:#fff;border-bottom:1px solid #e5e7eb}
@@ -18,33 +19,22 @@
         .actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
         button{padding:10px 14px;border:0;border-radius:10px;background:#111827;color:#fff;cursor:pointer}
         .ghost{background:#fff;color:#111827;border:1px solid #e5e7eb}
+        nav a{margin-left:12px;text-decoration:none;color:#111827}
         .msg{color:#065f46;margin:10px 0}
         .danger{border-color:#fecaca}
         .danger h2{color:#991b1b}
         .danger button{background:#991b1b}
         .hint{font-size:12px;color:#64748b;margin-top:6px}
-
-        nav{float:right; display:flex; gap:8px; align-items:center}
-        nav a, nav button{
-            padding:8px 12px;
-            border-radius:10px;
-            border:1px solid #e5e7eb;
-            background:#fff;
-            color:#111827;
-            text-decoration:none;
-            cursor:pointer
-        }
-        nav form{display:inline}
     </style>
 </head>
 <body>
 <header>
     <div class="wrap">
         <strong>Betterpedia</strong>
-        <nav>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit">Sign out</button>
-            </form>
+        <nav style="float:right">
+            <a th:href="@{/settings}">Appearance Settings</a>  <!-- ✅ 추가 -->
+            <a th:href="@{/my-notes}">My Notes</a>              <!-- ✅ 추가 -->
+            <a th:href="@{/logout}">Sign out</a>
         </nav>
     </div>
 </header>
@@ -53,8 +43,8 @@
     <h1>Account Settings</h1>
     <p th:if="${msg}" class="msg" th:text="${msg}"></p>
 
-<!--    Profile-->
     <div class="grid">
+        <!-- Profile -->
         <section class="card">
             <h2>Profile</h2>
             <form th:action="@{/account/profile}" method="post">
@@ -63,7 +53,7 @@
                 <input name="email" type="email" th:value="${user.email}" required />
                 <div class="actions">
                     <button type="submit">Save profile</button>
-                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                    <a th:href="@{/account}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
                 </div>
             </form>
         </section>
@@ -76,7 +66,7 @@
                 <div class="row">
                     <div>
                         <label>New password</label>
-                        <input name="newPassword" type="password" placeholder="Enter new password" required />
+                        <input name="newPassword" type="password" placeholder="At least 8 characters" required />
                     </div>
                     <div>
                         <label>Confirm new password</label>
@@ -85,20 +75,21 @@
                 </div>
                 <div class="actions">
                     <button type="submit">Change password</button>
-                    <span class="hint">Please enter a secure password</span>
+                    <span class="hint">For now, no hashing—security comes later.</span>
                 </div>
             </form>
         </section>
 
-        <!-- Danger Warning for deletion -->
+        <!-- Danger zone -->
         <section class="card danger">
             <h2>Delete account</h2>
+            <p class="hint">This permanently removes your account and roles.</p>
             <form th:action="@{/account/delete}" method="post"
                   onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
                 <input type="hidden" name="uid" th:value="${user.id}" />
                 <div class="actions">
                     <button type="submit">Delete my account</button>
-                    <a th:href="@{/account(uid=${user.id})}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
+                    <a th:href="@{/account}" class="ghost" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:10px;">Cancel</a>
                 </div>
             </form>
         </section>
