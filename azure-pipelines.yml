@@ -21,8 +21,8 @@ steps:
   - powershell: |
       Write-Host "Using JDK 21"
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$env:JAVA_HOME_21_X64"
-      $env:JAVA_HOME = $env:JAVA_HOME_21_X64"
-      $env:Path = "$env:JAVA_HOME\bin;" + $env:Path
+      $env:JAVA_HOME = $env:JAVA_HOME_21_X64
+      $env:Path = "$env:JAVA_HOME\bin;$env:Path"
       java -version
     displayName: 'Select JDK 21 (preinstalled)'
 
@@ -31,7 +31,7 @@ steps:
     displayName: 'Gradle clean build (skip tests)'
 
   # Step 3: Run unit tests and publish results
-  - task: Gradle@2
+  - task: Gradle@3
     displayName: 'Run unit tests and publish results'
     inputs:
       workingDirectory: ''
@@ -46,8 +46,8 @@ steps:
   # Step 4: Publish build artifacts
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: 'build/libs'
-      artifactName: 'drop'
+      PathtoPublish: '$(System.DefaultWorkingDirectory)/build/libs'
+      ArtifactName: 'drop'
       publishLocation: 'Container'
     displayName: 'Publish build artifacts'
     condition: succeededOrFailed()
