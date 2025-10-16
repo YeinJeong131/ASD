@@ -1,7 +1,8 @@
 package betterpedia.appearance.controller;
 
-import betterpedia.appearance.entity.UserSettings;
-import betterpedia.appearance.service.UserSettingService;
+import betterpedia.model.UserSettings;
+import betterpedia.services.UserSettingService;
+import betterpedia.controller.UserSettingController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

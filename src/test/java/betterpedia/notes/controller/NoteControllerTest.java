@@ -1,8 +1,9 @@
 package betterpedia.notes.controller;
 
-import betterpedia.notes.entity.Note;
-import betterpedia.notes.service.NoteService;
-import betterpedia.user.entity.User;
+import betterpedia.controller.NoteController;
+import betterpedia.model.Note;
+import betterpedia.services.NoteService;
+import betterpedia.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

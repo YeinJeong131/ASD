@@ -1,9 +1,10 @@
 package betterpedia.appearance.service;
 
-import betterpedia.appearance.entity.UserSettings;
-import betterpedia.appearance.repository.UserSettingsRepository;
-import betterpedia.user.entity.User;
-import betterpedia.user.repository.UserRepository;
+import betterpedia.model.UserSettings;
+import betterpedia.repository.UserSettingsRepository;
+import betterpedia.services.UserSettingService;
+import betterpedia.model.User;
+import betterpedia.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;

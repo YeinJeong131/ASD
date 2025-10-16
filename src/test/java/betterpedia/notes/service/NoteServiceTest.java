@@ -1,9 +1,10 @@
 package betterpedia.notes.service;
 
-import betterpedia.notes.entity.Note;
-import betterpedia.notes.repository.NoteRepository;
-import betterpedia.user.entity.User;
-import betterpedia.user.repository.UserRepository;
+import betterpedia.model.Note;
+import betterpedia.repository.NoteRepository;
+import betterpedia.services.NoteService;
+import betterpedia.model.User;
+import betterpedia.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
