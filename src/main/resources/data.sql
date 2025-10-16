@@ -1,4 +1,4 @@
-# USE wiki;
+USE wiki;
 
 -- Reset dev data (children first)
 SET FOREIGN_KEY_CHECKS=0;
@@ -50,11 +50,10 @@ WHERE u.email = 'admin@betterpedia.local';
 
 -- ========= ARTICLES (sample) =========
 -- If your schema for `article` changes, feel free to comment this block out.
-INSERT INTO article (title, body, publish_date, lan)
+INSERT INTO article (title, body, publish_date)
 VALUES ('DummyData',
         'This is dummyText yo yo \n dummy\n yoho\n\n\n\n\ndunno. lol',
-        CURDATE(),
-        'ENGLISH');
+        CURDATE());
 
 -- Link sample authors/tags to the article we just inserted (id = 1 after TRUNCATE)
 INSERT INTO article_authors (article_id, author) VALUES (1, 'Nima');

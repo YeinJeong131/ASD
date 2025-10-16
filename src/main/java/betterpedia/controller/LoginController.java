@@ -19,7 +19,7 @@ public class LoginController {
     private UserRepository userRepository;
 
     // GET /login - 로그인 페이지 표시
-    @GetMapping("/login")
+    @GetMapping("/login-2")
     public String loginPage(Model model, HttpSession session) {
         // 이미 로그인되어 있으면 wiki로 리다이렉트
         if (session.getAttribute("userId") != null) {

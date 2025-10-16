@@ -29,7 +29,7 @@ public class F101UserManagementController {
     }
 
     // 추가: /account GET 매핑 (Session 사용)
-    @GetMapping("/account")
+    @GetMapping("/account-2")
     public String accountPage(Model model, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
 

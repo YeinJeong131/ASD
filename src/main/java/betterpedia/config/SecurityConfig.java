@@ -2,7 +2,7 @@
 
 package betterpedia.config;
 
-import org.example.asd.UserRepository;
+import betterpedia.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
